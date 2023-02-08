@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>操作各个服务 on Mr.Liu World</title>
+    <link>https://qixiang-liu.github.io/tags/%E6%93%8D%E4%BD%9C%E5%90%84%E4%B8%AA%E6%9C%8D%E5%8A%A1/</link>
+    <description>Recent content in 操作各个服务 on Mr.Liu World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 30 Oct 2019 16:06:07 +0800</lastBuildDate>
+    
+	<atom:link href="https://qixiang-liu.github.io/tags/%E6%93%8D%E4%BD%9C%E5%90%84%E4%B8%AA%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>go操作mysql</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-go%E6%93%8D%E4%BD%9Cmysql/</link>
+      <pubDate>Wed, 30 Oct 2019 16:06:07 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-go%E6%93%8D%E4%BD%9Cmysql/</guid>
+      <description>&lt;p&gt;​       go的标准库database/sql包提供了保证sql或者类sql数据库的通用接口，但是没有提供具体数据库的驱动。因此使用database/sql包的时候必须注入至少一个数据库驱动&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>go操作etc</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-15-go%E6%93%8D%E4%BD%9Cetcd/</link>
+      <pubDate>Tue, 15 Oct 2019 19:14:08 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-15-go%E6%93%8D%E4%BD%9Cetcd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go操作es</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-13-go%E6%93%8D%E4%BD%9Ces/</link>
+      <pubDate>Sun, 13 Oct 2019 17:06:17 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-13-go%E6%93%8D%E4%BD%9Ces/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;​     前言：elasticsearch 是一个基于Lucene构建的开源的、分布式、restful接口的全文搜索引擎。es还是一个分布式的文档数据库，其中每个字段均可被索引，而且每个字段的数据均可被搜索。es扩展能力很强，可以扩展到几百台服务器以及处理PB级的数据。可以在短时间内存储、搜索和分析大量的数据。通常应用于复杂搜索场景情况下的核心发动机&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>go操作kafka</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-12-go%E6%93%8D%E4%BD%9Ckafka/</link>
+      <pubDate>Sat, 12 Oct 2019 10:50:02 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-12-go%E6%93%8D%E4%BD%9Ckafka/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go操作nsq</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-go%E6%93%8D%E4%BD%9Cnsq/</link>
+      <pubDate>Wed, 04 Sep 2019 09:47:12 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-go%E6%93%8D%E4%BD%9Cnsq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go操作redis</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-03-go%E6%93%8D%E4%BD%9Credis/</link>
+      <pubDate>Tue, 03 Sep 2019 08:57:30 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-03-go%E6%93%8D%E4%BD%9Credis/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

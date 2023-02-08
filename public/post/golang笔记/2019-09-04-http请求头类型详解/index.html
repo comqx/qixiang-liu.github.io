@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>http请求头类型详解 - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content="" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-http%E8%AF%B7%E6%B1%82%E5%A4%B4%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-http%E8%AF%B7%E6%B1%82%E5%A4%B4%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-http%E8%AF%B7%E6%B1%82%E5%A4%B4%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="http请求头类型详解" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-http%E8%AF%B7%E6%B1%82%E5%A4%B4%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3/" />
+<meta property="article:published_time" content="2019-09-04T21:05:08+08:00" />
+<meta property="article:modified_time" content="2019-09-04T21:05:08+08:00" />
+<meta itemprop="name" content="http请求头类型详解">
+<meta itemprop="description" content="">
+
+
+<meta itemprop="datePublished" content="2019-09-04T21:05:08&#43;08:00" />
+<meta itemprop="dateModified" content="2019-09-04T21:05:08&#43;08:00" />
+<meta itemprop="wordCount" content="1118">
+
+
+
+<meta itemprop="keywords" content="go爬虫使用场景问题解决," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="http请求头类型详解"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">http请求头类型详解</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-09-04 21:05 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 1118 字 </span>
+      <span class="more-meta"> 预计阅读 3 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#content-type的几种常见类型">Content-type的几种常见类型</a>
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#常见类型">常见类型</a>
+<ul>
+<li><a href="#application-x-www-form-urlencoded">application/x-www-form-urlencoded</a></li>
+<li><a href="#multipart-form-data">multipart/form-data</a></li>
+<li><a href="#application-json">application/json</a></li>
+<li><a href="#text-xml">text/xml</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#accept详解">Accept详解</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <h1 id="content-type的几种常见类型">Content-type的几种常见类型</h1>
+
+<h2 id="简介">简介</h2>
+
+<p>是Http的实体首部字段，用于说明请求或返回的消息主体是用何种方式编码，在request header和response header里都存在。</p>
+
+<h2 id="常见类型">常见类型</h2>
+
+<h3 id="application-x-www-form-urlencoded">application/x-www-form-urlencoded</h3>
+
+<p>1）浏览器的原生form表单
+2） 提交的数据按照 key1=val1&amp;key2=val2 的方式进行编码，key和val都进行了URL转码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">POST</span> <span class="p">[</span><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com](http://www.example.com) HTTP/1.1 
+</span><span class="c1"></span><span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">application</span><span class="o">/</span><span class="nx">x</span><span class="o">-</span><span class="p">[</span><span class="nx">www</span><span class="o">-</span><span class="nx">form</span><span class="o">-</span><span class="nx">urlencoded</span><span class="p">](</span><span class="nx">http</span><span class="p">:</span><span class="c1">//www-form-urlencoded);charset=utf-8 
+</span><span class="c1"></span>
+<span class="nx">title</span><span class="p">=</span><span class="nx">test</span><span class="o">&amp;</span><span class="nx">sub</span><span class="o">%</span><span class="mi">5</span><span class="nx">B</span><span class="o">%</span><span class="mi">5</span><span class="nx">D</span><span class="p">=</span><span class="mi">1</span><span class="o">&amp;</span><span class="nx">sub</span><span class="o">%</span><span class="mi">5</span><span class="nx">B</span><span class="o">%</span><span class="mi">5</span><span class="nx">D</span><span class="p">=</span><span class="mi">2</span><span class="o">&amp;</span><span class="nx">sub</span><span class="o">%</span><span class="mi">5</span><span class="nx">B</span><span class="o">%</span><span class="mi">5</span><span class="nx">D</span><span class="p">=</span><span class="mi">3</span> </code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="multipart-form-data">multipart/form-data</h3>
+
+<p>常见的 POST 数据提交的方式。我们使用表单上传文件时，必须让 form 的 enctype 等于这个值。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="p">&lt;</span><span class="nx">form</span> <span class="nx">action</span><span class="p">=</span><span class="s">&#34;/&#34;</span> <span class="nx">method</span><span class="p">=</span><span class="s">&#34;post&#34;</span> <span class="nx">enctype</span><span class="p">=</span><span class="s">&#34;multipart/form-data&#34;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nx">input</span> <span class="kd">type</span><span class="p">=</span><span class="s">&#34;text&#34;</span> <span class="nx">name</span><span class="p">=</span><span class="s">&#34;description&#34;</span> <span class="nx">value</span><span class="p">=</span><span class="s">&#34;some text&#34;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nx">input</span> <span class="kd">type</span><span class="p">=</span><span class="s">&#34;file&#34;</span> <span class="nx">name</span><span class="p">=</span><span class="s">&#34;myFile&#34;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nx">button</span> <span class="kd">type</span><span class="p">=</span><span class="s">&#34;submit&#34;</span><span class="p">&gt;</span><span class="nx">Submit</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="o">/</span><span class="nx">form</span><span class="p">&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>请求头看起来像这样</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">POST</span> <span class="o">/</span><span class="nx">foo</span> <span class="nx">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Length</span><span class="p">:</span> <span class="mi">68137</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">multipart</span><span class="o">/</span><span class="nx">form</span><span class="o">-</span><span class="nx">data</span><span class="p">;</span> <span class="nx">boundary</span><span class="p">=</span><span class="o">---------------------------</span><span class="mi">974767299852498929531610575</span>
+
+<span class="o">---------------------------</span><span class="mi">974767299852498929531610575</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Disposition</span><span class="p">:</span> <span class="nx">form</span><span class="o">-</span><span class="nx">data</span><span class="p">;</span> <span class="nx">name</span><span class="p">=</span><span class="s">&#34;description&#34;</span>
+
+<span class="nx">some</span> <span class="nx">text</span>
+<span class="o">---------------------------</span><span class="mi">974767299852498929531610575</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Disposition</span><span class="p">:</span> <span class="nx">form</span><span class="o">-</span><span class="nx">data</span><span class="p">;</span> <span class="nx">name</span><span class="p">=</span><span class="s">&#34;myFile&#34;</span><span class="p">;</span> <span class="nx">filename</span><span class="p">=</span><span class="s">&#34;foo.txt&#34;</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">text</span><span class="o">/</span><span class="nf">plain</span>
+
+<span class="p">(</span><span class="nx">content</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">uploaded</span> <span class="nx">file</span> <span class="nx">foo</span><span class="p">.</span><span class="nx">txt</span><span class="p">)</span>
+<span class="o">---------------------------</span><span class="mi">974767299852498929531610575</span><span class="o">--</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>解释：首先生成了一个 boundary 用于分割不同的字段，为了避免与正文内容重复，boundary 很长很复杂。
+然后 Content-Type 里指明了数据是以 multipart/form-data 来编码，本次请求的 boundary 是什么内容。
+消息主体里按照字段个数又分为多个结构类似的部分，每部分都是以 --boundary 开始，紧接着是内容描述信息，然后是回车，最后是字段具体内容（文本或二进制）。
+如果传输的是文件，还要包含文件名和文件类型信息。消息主体最后以 --boundary-- 标示结束。关于 multipart/form-data 的详细定义，请前往 <a href="https://link.jianshu.com/?t=http%3A%2F%2Fwww.ietf.org%2Frfc%2Frfc1867.txt">rfc1867</a>查看。</p>
+
+<h3 id="application-json">application/json</h3>
+
+<p>消息主体是序列化后的 JSON 字符串,这个类型越来越多地被大家所使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">POST</span> <span class="p">[</span><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com](http://www.example.com) HTTP/1.1 
+</span><span class="c1"></span><span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">application</span><span class="o">/</span><span class="nx">json</span><span class="p">;</span><span class="nx">charset</span><span class="p">=</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span> 
+
+<span class="p">{</span><span class="s">&#34;title&#34;</span><span class="p">:</span><span class="s">&#34;test&#34;</span><span class="p">,</span><span class="s">&#34;sub&#34;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这种方案，可以方便的提交复杂的结构化数据，特别适合 RESTful 的接口。各大抓包工具如 Chrome 自带的开发者工具、Firebug、Fiddler，都会以树形结构展示 JSON 数据，非常友好。</p>
+
+<h3 id="text-xml">text/xml</h3>
+
+<p>是一种使用 HTTP 作为传输协议，XML 作为编码方式的远程调用规范</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">POST</span> <span class="p">[</span><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com](http://www.example.com) HTTP/1.1 
+</span><span class="c1"></span><span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span> 
+<span class="p">&lt;!</span><span class="o">--</span><span class="err">?</span><span class="nx">xml</span> <span class="nx">version</span><span class="p">=</span><span class="s">&#34;1.0&#34;</span><span class="err">?</span><span class="o">--</span><span class="p">&gt;</span> 
+<span class="p">&lt;</span><span class="nx">methodcall</span><span class="p">&gt;</span> 
+    <span class="p">&lt;</span><span class="nx">methodname</span><span class="p">&gt;</span><span class="nx">examples</span><span class="p">.</span><span class="nx">getStateName</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">methodname</span><span class="p">&gt;</span> 
+    <span class="p">&lt;</span><span class="nx">params</span><span class="p">&gt;</span> 
+        <span class="p">&lt;</span><span class="nx">param</span><span class="p">&gt;</span> 
+            <span class="p">&lt;</span><span class="nx">value</span><span class="p">&gt;&lt;</span><span class="nx">i4</span><span class="p">&gt;</span><span class="mi">41</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">i4</span><span class="p">&gt;&lt;</span><span class="o">/</span><span class="nx">value</span><span class="p">&gt;</span> 
+    <span class="p">&lt;</span><span class="o">/</span><span class="nx">params</span><span class="p">&gt;</span> 
+<span class="p">&lt;</span><span class="o">/</span><span class="nx">methodcall</span><span class="p">&gt;</span> </code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="accept详解">Accept详解</h1>
+
+<p>指定客户端能够接收的内容类型，服务器根据请求头“Accept=application/json”生产json数据。</p>
+
+<p>服务器根据请求头“Accept=application/json”生产json数据。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">当你有如下Accept头，将遵守如下规则进行应用：
+
+①Accept：text/html,application/xml,application/json
+	将按照如下顺序进行produces的匹配 ①text/html ②application/xml ③application/json
+	
+②Accept：application/xml;q=0.5,application/json;q=0.9,text/html
+      将按照如下顺序进行produces的匹配 ①text/html ②application/json ③application/xml
+      参数为媒体类型的质量因子，越大则优先权越高(从0到1)
+      
+③Accept：*/*,text/*,text/html
+      将按照如下顺序进行produces的匹配 ①text/html ②text/* ③*/*</pre></td></tr></table>
+</div>
+</div>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-09-04 21:05
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/go%E7%88%AC%E8%99%AB%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/">go爬虫使用场景问题解决</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-09-10-bufio%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">bufio标准库的使用</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">
+        <span class="next-text nav-default">文件操作</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

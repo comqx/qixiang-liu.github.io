@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nusr/blog.git"
+    "url": "git+https://github.com/qixiang-liu/qixiang-liu.github.io.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nusr/blog/issues"
+    "url": "https://github.com/qixiang-liu/qixiang-liu.github.io/issues"
   },
-  "homepage": "https://github.com/nusr/blog#readme",
+  "homepage": "https://github.com/qixiang-liu/qixiang-liu.github.io#readme",
   "dependencies": {
     "husky": "^2.2.0"
   },

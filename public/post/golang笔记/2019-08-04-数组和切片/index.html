@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>数组和切片 - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content="" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-08-04-%E6%95%B0%E7%BB%84%E5%92%8C%E5%88%87%E7%89%87/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-08-04-%E6%95%B0%E7%BB%84%E5%92%8C%E5%88%87%E7%89%87/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-08-04-%E6%95%B0%E7%BB%84%E5%92%8C%E5%88%87%E7%89%87/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="数组和切片" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-08-04-%E6%95%B0%E7%BB%84%E5%92%8C%E5%88%87%E7%89%87/" />
+<meta property="article:published_time" content="2019-08-04T12:40:18+08:00" />
+<meta property="article:modified_time" content="2019-08-04T12:40:18+08:00" />
+<meta itemprop="name" content="数组和切片">
+<meta itemprop="description" content="">
+
+
+<meta itemprop="datePublished" content="2019-08-04T12:40:18&#43;08:00" />
+<meta itemprop="dateModified" content="2019-08-04T12:40:18&#43;08:00" />
+<meta itemprop="wordCount" content="2975">
+
+
+
+<meta itemprop="keywords" content="数据类型," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="数组和切片"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">数组和切片</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-08-04 12:40 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 2975 字 </span>
+      <span class="more-meta"> 预计阅读 6 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#数组-array">数组-array</a>
+<ul>
+<li><a href="#数组的声明">数组的声明</a></li>
+<li><a href="#数组的初始化">数组的初始化</a></li>
+<li><a href="#数组的遍历">数组的遍历</a></li>
+<li><a href="#多维数组">多维数组</a></li>
+<li><a href="#多维数组遍历">多维数组遍历</a></li>
+</ul></li>
+<li><a href="#切片-slice">切片-slice</a>
+<ul>
+<li><a href="#切片的初始化">切片的初始化</a>
+<ul>
+<li><a href="#基于数组定义切片">基于数组定义切片</a></li>
+<li><a href="#使用make-构造切片">使用make()构造切片</a></li>
+</ul></li>
+<li><a href="#切片的len-和cap">切片的len()和cap()</a></li>
+<li><a href="#切片的遍历">切片的遍历</a></li>
+<li><a href="#切片可以再次切片">切片可以再次切片</a></li>
+<li><a href="#切片的本质">切片的本质</a></li>
+<li><a href="#用append内置函数操作切片">用append内置函数操作切片</a>
+<ul>
+<li><a href="#关于append删除切片中的某个元素">关于append删除切片中的某个元素</a></li>
+</ul></li>
+<li><a href="#切片的拷贝-内置函数copy">切片的拷贝-内置函数copy()</a></li>
+</ul></li>
+<li><a href="#string与slice">string与slice</a>
+<ul>
+<li><a href="#string内存布局">string内存布局</a></li>
+<li><a href="#如何改变string中的字符值">如何改变string中的字符值</a></li>
+</ul></li>
+<li><a href="#排序和查找操作-sort包">排序和查找操作-sort包</a></li>
+<li><a href="#array和slice类型的区别">array和slice类型的区别</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <h1 id="数组-array">数组-array</h1>
+
+<h2 id="数组的声明">数组的声明</h2>
+
+<ol>
+<li><p>数组是同一种数据类型的固定长度的序列</p></li>
+
+<li><p>数组的定义:
+<code>var a [len]int,比如：var a[6]int</code>，一旦定义，长度不能变</p></li>
+
+<li><p>长度是数组类型的一部分,因此，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// var a[5] int`和` var a[10] int 是不同的类型
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">example</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+	<span class="kd">var</span> <span class="nx">b</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%v,%T\n&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span> <span class="c1">//[1 2 3],[3]int
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%v,%T\n&#34;</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="c1">//[1 2 3 4 5],[5]int
+</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>数组可以通过下标进行访问，下标是从0开始，最后一个元素下标是：len-1</p></li>
+
+<li><p>访问越界，如果下标在数组合法范围之外，则触发访问越界，会panic</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 访问越界问题
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="kt">int</span>
+	<span class="c1">// j := 10 // 不能超出数组的范围，会报错panic
+</span><span class="c1"></span>	<span class="nx">j</span> <span class="o">:=</span> <span class="mi">9</span>
+	<span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">10</span>
+	<span class="nx">a</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">=</span> <span class="mi">100</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+   
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">val</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">a</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;a[%d]=%d\n&#34;</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">val</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>数组是值类型，因此改变副本的值，不会改变本身的值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">//数组是值类型，改变副本的值，不会改变本身的值
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="kt">int</span>
+	<span class="nx">b</span> <span class="o">:=</span> <span class="nx">a</span>   <span class="c1">//相等于ctrl+c ctrl+v ==&gt;把world文档从A文件复制到B文件
+</span><span class="c1"></span>	<span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">101</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="c1">//[0 0 0 0 0 0 0 0 0 0] a的值没有发生变化
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// 如果需要 改变 原来的数组的值需要传入 地址 进去
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">test3</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1000</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">test4</span><span class="p">(</span><span class="nx">arr</span> <span class="o">*</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1000</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">test41</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span>
+	<span class="nf">test3</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="c1">//[0 0 0 0 0]
+</span><span class="c1"></span>	<span class="nf">test4</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">a</span><span class="p">)</span>      <span class="c1">//&amp;a传入值类型的地址
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="c1">//[1000 0 0 0 0]
+</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+
+<h2 id="数组的初始化">数组的初始化</h2>
+
+<blockquote>
+<p>如果不初始化：默认元素都是零值（布尔值：false, 整型和浮点型都是0, 字符串：&quot;&quot;）</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">age0</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span> <span class="c1">//自动填充0，初始化方式1  [1 2 3 0 0] 
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">age1</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>  <span class="c1">//初始化方式2   [1 2 3 4 5]
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">age2</span> <span class="p">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span> <span class="c1">//自动计算长度，初始化方式3 [1 2 3 4 5]
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">age3</span> <span class="p">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">2</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="mi">5</span><span class="p">:</span><span class="mi">200</span><span class="p">}</span> <span class="c1">//按照索引进行初始化，初始化方式4 [0 0 100 0 0 200]
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">str</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="s">&#34;hello world&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s">&#34;tom&#34;</span><span class="p">}</span>  <span class="o">//</span><span class="p">[</span>   <span class="nx">hello</span> <span class="nx">world</span> <span class="nx">tom</span><span class="p">]</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="数组的遍历">数组的遍历</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="kd">var</span> <span class="nx">s4</span> <span class="p">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;青铜&#34;</span><span class="p">,</span> <span class="s">&#34;白银&#34;</span><span class="p">,</span> <span class="s">&#34;黄金&#34;</span><span class="p">,</span> <span class="s">&#34;白金&#34;</span><span class="p">}</span>
+<span class="c1">//索引遍历
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s4</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%s\n&#34;</span><span class="p">,</span> <span class="nx">s4</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+	<span class="p">}</span>
+<span class="c1">//range遍历
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">s4</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;(%d,%s)\n&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+	<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="多维数组">多维数组</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="c1">//多维数组定义
+</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">i6</span> <span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="kt">int</span>  <span class="c1">//i6的类型是[3]（[2]int）类型
+</span><span class="c1"></span>	<span class="nx">i6</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span> <span class="c1">//默认填充[0 0]数组
+</span><span class="c1"></span>		<span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">},</span>
+		<span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i6</span><span class="p">)</span> <span class="o">//</span><span class="p">[[</span><span class="mi">1</span> <span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">2</span><span class="p">]</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span><span class="p">]]</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="多维数组遍历">多维数组遍历</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">f</span> <span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span> <span class="p">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">{{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">},</span> <span class="p">{</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">}}</span> <span class="c1">//2行5列
+</span><span class="c1"></span><span class="k">for</span> <span class="nx">row</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">f</span> <span class="p">{</span> <span class="c1">//遍历行，v其实也就是一个数组
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">col</span><span class="p">,</span> <span class="nx">v1</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">v</span> <span class="p">{</span> <span class="c1">//遍历列
+</span><span class="c1"></span>		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;{%d,%d}=%d&#34;</span><span class="p">,</span> <span class="nx">row</span><span class="p">,</span> <span class="nx">col</span><span class="p">,</span> <span class="nx">v1</span><span class="p">)</span> <span class="c1">//坐标的值
+</span><span class="c1"></span>	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="c1">// {0,0}=1{0,1}=2{0,2}=3{0,3}=4{0,4}=5
+</span><span class="c1"></span><span class="o">//</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">}=</span><span class="mi">6</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}=</span><span class="mi">7</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">}=</span><span class="mi">8</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">}=</span><span class="mi">9</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">}=</span><span class="mi">10</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="切片-slice">切片-slice</h1>
+
+<ol>
+<li><p>切片是引用类型，都指向了底层的一个数组，<code>切片不保存值,只是内存地址引用的是底层的数组</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="kd">var</span> <span class="nx">a2</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
+	<span class="nx">ss1</span> <span class="o">:=</span> <span class="nx">a2</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ss1</span><span class="p">)</span> <span class="c1">//[2 3 4 5]
+</span><span class="c1"></span>	<span class="nx">a2</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1000</span> <span class="c1">//修改底层数组的值
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ss1</span><span class="p">)</span> <span class="o">//</span><span class="p">[</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">1000</span> <span class="mi">5</span><span class="p">]</span> <span class="nx">切片ss1发生变化</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>切片的长度是可以改变，因此，切片是一个可变的数组，切片的长度是它元素的个数</p></li>
+
+<li><p>切片遍历方式和数组一样，可以用len()求长度</p></li>
+
+<li><p>cap可以求出slice最大的容量，<code>0&lt;=len(slice) &lt;= cap(array)</code>,其中array是slice引用的数组</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 长度和容量
+</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;len(s1):%d cap(s1):%d\n&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s1</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s1</span><span class="p">))</span>
+<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;len(s2):%d cap(s2):%d\n&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s2</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s2</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>切片的定义：</p></li>
+</ol>
+
+<blockquote>
+<p>切片没有被初始化，默认是nil</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">  <span class="c1">// var 变量名 []类型
+</span><span class="c1"></span>  <span class="c1">// 切片的定义
+</span><span class="c1"></span>  	<span class="kd">var</span> <span class="nx">s1</span> <span class="p">[]</span><span class="kt">int</span>           <span class="c1">//定义一个元素为int类型的切片
+</span><span class="c1"></span>  	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s1</span><span class="p">)</span>        <span class="c1">//[]
+</span><span class="c1"></span>  	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s1</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">)</span> <span class="c1">//true
+</span><span class="c1"></span>  	<span class="nx">s2</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span> <span class="o">//</span><span class="nx">给切片添加元素</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="切片的初始化">切片的初始化</h2>
+
+<h3 id="基于数组定义切片">基于数组定义切片</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="c1">// 由数组得到切片
+</span><span class="c1"></span>	<span class="nx">a1</span> <span class="o">:=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">}</span>
+	<span class="nx">s3</span> <span class="o">:=</span> <span class="nx">a1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="c1">// 基于一个数组切割切片，左包含右不包含，（左闭右开）
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s3</span><span class="p">)</span>
+	<span class="nx">s4</span> <span class="o">:=</span> <span class="nx">a1</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s4</span><span class="p">)</span>
+	<span class="nx">s5</span> <span class="o">:=</span> <span class="nx">a1</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="c1">// =&gt; [0:4] [1 3 5 7]
+</span><span class="c1"></span>	<span class="nx">s6</span> <span class="o">:=</span> <span class="nx">a1</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="c1">// =&gt; [3:len(a1)]  [7 9 11 13]
+</span><span class="c1"></span>	<span class="nx">s7</span> <span class="o">:=</span> <span class="nx">a1</span><span class="p">[:]</span>  <span class="c1">// =&gt; [0:len(a1)] 
+</span><span class="c1"></span>  <span class="nx">s8</span><span class="err">：</span><span class="p">=</span> <span class="nx">a1</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">a1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="c1">// =&gt;去掉最后一个元素
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s5</span><span class="p">,</span> <span class="nx">s6</span><span class="p">,</span> <span class="nx">s7</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="使用make-构造切片">使用make()构造切片</h3>
+
+<p><img src="/post/images/2019-06-12-22-51-14.png" alt="" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">slice</span> <span class="p">[]</span><span class="kd">type</span><span class="p">=</span><span class="nb">make</span><span class="p">([]</span><span class="kd">type</span><span class="p">,</span><span class="nx">len</span><span class="p">)</span>
+<span class="nx">slice</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kd">type</span><span class="p">,</span><span class="nx">len</span><span class="p">)</span>
+<span class="nx">slice</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kd">type</span><span class="p">,</span><span class="nx">len</span><span class="p">,</span><span class="nx">cap</span><span class="p">)</span>
+
+	<span class="c1">//make 函数创造切片
+</span><span class="c1"></span>	<span class="nx">ms1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>                         <span class="c1">//定义切片类型，长度，容量
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%v,%d,%d\n&#34;</span><span class="p">,</span> <span class="nx">ms1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ms1</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">ms1</span><span class="p">))</span> <span class="o">//</span><span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">],</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="切片的len-和cap">切片的len()和cap()</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="nx">a4</span> <span class="o">:=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">}</span>
+	<span class="nx">s7</span> <span class="o">:=</span> <span class="nx">a4</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="c1">//[4 5 6 7]
+</span><span class="c1"></span>	<span class="nx">s8</span> <span class="o">:=</span> <span class="nx">a4</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="c1">//[7 8 9 0]
+</span><span class="c1"></span>	<span class="nx">s9</span> <span class="o">:=</span> <span class="nx">a4</span><span class="p">[:]</span>  <span class="c1">//[4 5 6 7 8 9 0]
+</span><span class="c1"></span>	<span class="c1">//长度和容量
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;len(s7)=%d,cap(s7)=%d\n&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s7</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s7</span><span class="p">))</span> <span class="c1">//len(s7)=4,cap(s7)=7
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;len(s8)=%d,cap(s8)=%d\n&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s8</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s8</span><span class="p">))</span> <span class="c1">//len(s8)=4,cap(s8)=4
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;len(s9)=%d,cap(s9)=%d\n&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s9</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">s9</span><span class="p">))</span> <span class="o">//</span><span class="nb">len</span><span class="p">(</span><span class="nx">s9</span><span class="p">)=</span><span class="mi">7</span><span class="p">,</span><span class="nb">cap</span><span class="p">(</span><span class="nx">s9</span><span class="p">)=</span><span class="mi">7</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="切片的遍历">切片的遍历</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">//切片的遍历和数组相同	
+</span><span class="c1"></span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ms1</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ms1</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">ms1</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+	<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="切片可以再次切片">切片可以再次切片</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">a</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">}</span>
+<span class="nx">b</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="nx">b</span> <span class="p">=</span> <span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="切片的本质">切片的本质</h2>
+
+<blockquote>
+<p>切片的本质就是对底层的数组的封装。包含3个信息：<code>底层数组的指针</code>、<code>切片的长度</code>和<code>切片的容量</code></p>
+</blockquote>
+
+<ul>
+<li>切片就是一个框，框住了一块连续的内存。</li>
+<li>切片属于引用类型，真正的数据都是保存在底层数组里的。</li>
+
+<li><p>判断一个切片是否是空的，要是用<code>len(s) == 0</code>来判断</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">a</span><span class="o">:=</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">}</span>
+<span class="nx">s1</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<p><img src="/post/images/image-20190707182623280.png" alt="image-20190707182623280" /></p>
+
+<p><code>s2 := a[3:6]</code></p>
+
+<p><img src="/post/images/image-20190707182736535.png" alt="image-20190707182736535" /></p>
+
+<h2 id="用append内置函数操作切片">用append内置函数操作切片</h2>
+
+<ul>
+<li>append为切片追加元素，如果容量满了可以自动扩容</li>
+<li>使用append函数，必须要用原来的切片变量来接收返回值</li>
+
+<li><p>append可以追加一个新的切片到原来的切片中，使用<code>...</code>展开切片</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="c1">//append函数为切片追加元素
+</span><span class="c1"></span>	<span class="nx">as1</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;青铜&#34;</span><span class="p">}</span>
+	<span class="nx">as1</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">as1</span><span class="p">,</span> <span class="s">&#34;砖石&#34;</span><span class="p">)</span> <span class="c1">//使用append函数，必须要用原来的切片变量来接收返回值
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">as1</span><span class="p">)</span>
+	<span class="nx">as1</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">as1</span><span class="p">,</span> <span class="s">&#34;王者&#34;</span><span class="p">,</span> <span class="s">&#34;白金&#34;</span><span class="p">)</span>
+	<span class="nx">ss11</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;白银&#34;</span><span class="p">,</span> <span class="s">&#34;黄金&#34;</span><span class="p">}</span>
+	<span class="nx">as1</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">as1</span><span class="p">,</span> <span class="nx">ss11</span><span class="o">...</span><span class="p">)</span> <span class="c1">//append追加一个切片到原来的切片中
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">as1</span><span class="p">)</span> <span class="o">//</span><span class="p">[</span><span class="nx">青铜</span> <span class="nx">砖石</span> <span class="nx">王者</span> <span class="nx">白金</span> <span class="nx">白银</span> <span class="nx">黄金</span><span class="p">]</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<h3 id="关于append删除切片中的某个元素">关于append删除切片中的某个元素</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-GO" data-lang="GO"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-GO" data-lang="GO">	<span class="nx">aa1</span> <span class="o">:=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">}</span>
+	<span class="nx">aas1</span> <span class="o">:=</span> <span class="nx">aa1</span><span class="p">[:]</span>
+
+	<span class="nx">aas1</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">aas1</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="nx">aa1</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">...</span><span class="p">)</span> <span class="c1">//给切片aas1[:2]追加元素为一个切片aa1[3:]
+</span><span class="c1"></span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">aas1</span><span class="p">)</span> <span class="c1">//[1 2 4 5 6 7 8 9 5 4]
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">aa1</span><span class="p">)</span> <span class="o">//</span><span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">5</span> <span class="mi">4</span> <span class="mi">4</span><span class="p">]</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="切片的拷贝-内置函数copy">切片的拷贝-内置函数copy()</h2>
+
+<ul>
+<li><p>copy 是把原来的切片里面的全部元素拷贝到另一个切片里面，此时俩个切片之间没有任何关系</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="c1">//copy()的使用,copy的是切片底层的数组，copy完成后，会变成俩个完全独立的切片，也就是深拷贝
+</span><span class="c1"></span>	<span class="c1">//copy(目标，原)
+</span><span class="c1"></span>	<span class="nx">ca1</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
+	<span class="nx">ca2</span> <span class="o">:=</span> <span class="nx">ca1</span>                  <span class="c1">//切片赋值
+</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">ca3</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="c1">//make一个长度为5，容量为6的切片，默认值为[0 0 0 0 0]
+</span><span class="c1"></span>	<span class="nb">copy</span><span class="p">(</span><span class="nx">ca3</span><span class="p">,</span> <span class="nx">ca1</span><span class="p">)</span>              <span class="c1">//copy
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ca1</span><span class="p">,</span> <span class="nx">ca2</span><span class="p">,</span> <span class="nx">ca3</span><span class="p">)</span>  <span class="c1">//[1 3 5] [1 3 5] [1 3 5 0 0]
+</span><span class="c1"></span>	<span class="nx">ca1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">100</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ca1</span><span class="p">,</span> <span class="nx">ca2</span><span class="p">,</span> <span class="nx">ca3</span><span class="p">)</span> <span class="o">//</span><span class="p">[</span><span class="mi">100</span> <span class="mi">3</span> <span class="mi">5</span><span class="p">]</span> <span class="p">[</span><span class="mi">100</span> <span class="mi">3</span> <span class="mi">5</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">3</span> <span class="mi">5</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<h1 id="string与slice">string与slice</h1>
+
+<blockquote>
+<p>string底层就是一个byte的数组，因此，也可以进行切片操作</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">str</span> <span class="o">:=</span> <span class="s">&#34;hello world&#34;</span>
+<span class="nx">s1</span> <span class="o">:=</span> <span class="nx">str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s1</span><span class="p">)</span>
+
+<span class="nx">s2</span> <span class="o">:=</span> <span class="nx">str</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span>
+<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s2</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="string内存布局">string内存布局</h2>
+
+<p><img src="/post/images/2019-06-12-23-19-00.png" alt="" /></p>
+</blockquote>
+
+<h2 id="如何改变string中的字符值">如何改变string中的字符值</h2>
+
+<blockquote>
+<p>string本身是不可变的，因此要改变string中字符，需要如下操作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">testModifyString</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">s</span> <span class="o">:=</span> <span class="s">&#34;hello world&#34;</span>
+	<span class="nx">s1</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">rune</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">//按照字符大小格式化
+</span><span class="c1"></span>
+	<span class="nx">s1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="sc">&#39;0&#39;</span>
+	<span class="nx">str</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">s1</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="排序和查找操作-sort包">排序和查找操作-sort包</h1>
+
+<p>转换为切片才能对数组进行排序
+- sort.Ints对整数进行排序
+- sort.Strings对字符串进行排序
+- sort.Float64s对浮点数进行排序
+- sort.SearchInts(a []int,b int) 从数组a中查找b,前提是a必须有序
+- sort.SearchFloats(a []float64,b float64) 从数组a中查找b,前提是a必须有序
+- sort.SearchStrings(a []string,b string) 从数组a中查找b,前提是a必须有序</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sort&#34;</span>
+<span class="p">)</span>
+
+<span class="c1">// int进行排序
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">testIntsort</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+	<span class="nx">sort</span><span class="p">.</span><span class="nf">Ints</span><span class="p">(</span><span class="nx">a</span><span class="p">[:])</span>   <span class="c1">//转换为切片才能对数组进行排序
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">//字符串排序
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">testStringSort</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;abc&#34;</span><span class="p">,</span> <span class="s">&#34;s&#34;</span><span class="p">,</span> <span class="s">&#34;sdfdsf&#34;</span><span class="p">,</span> <span class="s">&#34;xz&#34;</span><span class="p">,</span> <span class="s">&#34;q&#34;</span><span class="p">}</span>
+	<span class="nx">sort</span><span class="p">.</span><span class="nf">Strings</span><span class="p">(</span><span class="nx">a</span><span class="p">[:])</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// float排序
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">testFloatSort</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">float64</span><span class="p">{</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">32.1</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">}</span>
+	<span class="nx">sort</span><span class="p">.</span><span class="nf">Float64s</span><span class="p">(</span><span class="nx">a</span><span class="p">[:])</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">//int类型搜索
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">testIntSearch</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">a</span> <span class="p">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+	<span class="c1">// sort.Ints(a[:])
+</span><span class="c1"></span>	<span class="nx">index</span> <span class="o">:=</span> <span class="nx">sort</span><span class="p">.</span><span class="nf">SearchInts</span><span class="p">(</span><span class="nx">a</span><span class="p">[:],</span> <span class="mi">121</span><span class="p">)</span> <span class="c1">//返回的是排序后的索引位置
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nf">testIntsort</span><span class="p">()</span>
+	<span class="nf">testStringSort</span><span class="p">()</span>
+	<span class="nf">testFloatSort</span><span class="p">()</span>
+	<span class="nf">testIntSearch</span><span class="p">()</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="array和slice类型的区别">array和slice类型的区别</h1>
+
+<ul>
+<li><p><code>array</code>声明的时候，方括号里面需要注明array的长度；<code>slice</code>声明的时候，方括号为空</p></li>
+
+<li><p>作为函数参数时，<code>array</code>传递的是一个数组的副本，而<code>slice</code>传递的是一个指针</p></li>
+
+<li><p><code>array</code>是值类型，<code>slice</code>是引用类型</p></li>
+</ul>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-08-04 12:40
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">数据类型</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-08-04-%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">指针类型</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-08-04-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+        <span class="next-text nav-default">基本数据类型</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

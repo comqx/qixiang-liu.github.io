@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go爬虫使用场景问题解决 on Mr.Liu World</title>
+    <link>https://qixiang-liu.github.io/tags/go%E7%88%AC%E8%99%AB%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/</link>
+    <description>Recent content in go爬虫使用场景问题解决 on Mr.Liu World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 29 Sep 2019 16:10:29 +0800</lastBuildDate>
+    
+	<atom:link href="https://qixiang-liu.github.io/tags/go%E7%88%AC%E8%99%AB%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>http包中keepalive问题</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-29-http%E5%8C%85%E4%B8%ADkeepalive%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Sun, 29 Sep 2019 16:10:29 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-29-http%E5%8C%85%E4%B8%ADkeepalive%E9%97%AE%E9%A2%98/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>http请求头类型详解</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-http%E8%AF%B7%E6%B1%82%E5%A4%B4%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Wed, 04 Sep 2019 21:05:08 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-09-04-http%E8%AF%B7%E6%B1%82%E5%A4%B4%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go调用系统命令打开对应资源</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-08-28-go%E8%B0%83%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E5%AF%B9%E5%BA%94%E8%B5%84%E6%BA%90/</link>
+      <pubDate>Wed, 28 Aug 2019 09:05:20 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-08-28-go%E8%B0%83%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E5%AF%B9%E5%BA%94%E8%B5%84%E6%BA%90/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

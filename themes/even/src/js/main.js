@@ -11,7 +11,7 @@ $(document).ready(function () {
         console.dir(this)
         var value = $(this).find('input').eq(0).val();
         if (value) {
-            var url = 'https://github.com/nusr/blog/search?utf8=✓&q=' + encodeURIComponent(value);
+            var url = 'https://github.com/qixiang-liu/qixiang-liu.github.io/search?utf8=✓&q=' + encodeURIComponent(value);
             window.open(url, '_blank');
         }
         return false;

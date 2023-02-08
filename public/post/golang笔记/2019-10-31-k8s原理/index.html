@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>k8s原理 - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content="" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-31-k8s%E5%8E%9F%E7%90%86/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-31-k8s%E5%8E%9F%E7%90%86/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-31-k8s%E5%8E%9F%E7%90%86/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="k8s原理" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-31-k8s%E5%8E%9F%E7%90%86/" />
+<meta property="article:published_time" content="2019-10-31T17:08:21+08:00" />
+<meta property="article:modified_time" content="2019-10-31T17:08:21+08:00" />
+<meta itemprop="name" content="k8s原理">
+<meta itemprop="description" content="">
+
+
+<meta itemprop="datePublished" content="2019-10-31T17:08:21&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-31T17:08:21&#43;08:00" />
+<meta itemprop="wordCount" content="3206">
+
+
+
+<meta itemprop="keywords" content="面试笔记相关," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="k8s原理"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">k8s原理</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-10-31 17:08 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 3206 字 </span>
+      <span class="more-meta"> 预计阅读 7 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#k8s">k8s</a>
+<ul>
+<li><a href="#pause-暂停-组件的作用">pause(暂停)组件的作用</a>
+<ul>
+<li><a href="#pause容器主要为每个业务容器提供以下功能">pause容器主要为每个业务容器提供以下功能</a></li>
+</ul></li>
+<li><a href="#一个pod启动的全生命周期"><strong>一个pod启动的全生命周期</strong></a></li>
+<li><a href="#scheduler-和manager的集群原理">Scheduler 和manager的集群原理</a></li>
+<li><a href="#scheduler的调度策略"><strong>scheduler的调度策略</strong></a>
+<ul>
+<li><a href="#调度策略">调度策略</a>
+<ul>
+<li><a href="#预选策略-必须全部满足">预选策略--必须全部满足</a></li>
+<li><a href="#优选策略">优选策略</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#kube-controller-manager">kube-controller-manager</a>
+<ul>
+<li><a href="#pod的生命周期">pod的生命周期</a>
+<ul>
+<li><a href="#pod-phase-阶段">Pod phase（阶段）</a></li>
+<li><a href="#pod5个状态">pod5个状态</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#deployment-replicationcontroller-replicaset">deployment、ReplicationController、replicaset</a>
+<ul>
+<li><a href="#helm2-和helm3存储位置">Helm2 和helm3存储位置</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <h1 id="k8s">k8s</h1>
+
+<h2 id="pause-暂停-组件的作用">pause(暂停)组件的作用</h2>
+
+<p>首先复制下docker的namespace</p>
+
+<h3 id="pause容器主要为每个业务容器提供以下功能">pause容器主要为每个业务容器提供以下功能</h3>
+
+<ul>
+<li>在pod中担任Linux命名空间共享的基础；
+
+<ul>
+<li>pod中，user、UTS、mount、network都是共享的。</li>
+<li>pod中，pid、ipc默认是不共享的</li>
+</ul></li>
+<li>启用pid命名空间，开启init进程。
+
+<ul>
+<li>Pod中，PID默认是不共享的，因此IPC也是不共享的。k8s 1.8之后默认情况下是禁用的，除非由kubelet标志（--docker-disable-shared-pid=false）启用，所有我们看到一个pod中各个容器的pid是相互独立的。</li>
+</ul></li>
+</ul>
+
+<p>如果没有启动pid命名空间共享，则Pod中的每个容器都将具有自己的PID 1，并且每个容器都需要收集僵尸进程本身。很多时候，这不是一个问题，因为应用程序很少产生其他进程，但僵尸进程使用内存是一个经常被忽视的问题。因此，由于PID命名空间共享使你能够在同一个Pod中的容器之间发送信号。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">引出僵尸进程：正常的进程结束后，会调用exit退出，变成一个僵尸进程，然后释放全部资源，等待父进程回收，如果**父进程没有安装sigchld信号处理函数调用wait()或者waitid()等待子进程结束，也没有显示忽略改信号**，那么他会一直是一个僵尸进程。如果父进程结束了，会交给init进程来回收。那如果父进程是一个循环，不会结束的话，那么子进程就会一直保持僵尸进程，不会释放资源。</pre></td></tr></table>
+</div>
+</div>
+<h2 id="一个pod启动的全生命周期"><strong>一个pod启动的全生命周期</strong></h2>
+
+<h2 id="scheduler-和manager的集群原理">Scheduler 和manager的集群原理</h2>
+
+<h2 id="scheduler的调度策略"><strong>scheduler的调度策略</strong></h2>
+
+<h3 id="调度策略">调度策略</h3>
+
+<blockquote>
+<p>k8s的调度策略分为predicates（预选策略）和priorites（优选策略），整个调度过程分俩步</p>
+</blockquote>
+
+<ul>
+<li>预选策略，predicates是强制性规则，遍历所有的node节点，安装具体的预选策略筛选出符合要求的node列表，如果没有node符合predicates策略规则，那么pod就会被挂起，直到有node能够满足</li>
+<li>优选策略，在第一步筛选的基础上，按照优选策略为待选node打分排序，获取最优者</li>
+</ul>
+
+<h4 id="预选策略-必须全部满足">预选策略--必须全部满足</h4>
+
+<ol>
+<li>CheckNodeCondition：检测node是否正常</li>
+<li>GeneralPredicates：普通判断策略
+
+<ol>
+<li>HostName: 检测pod对象是否定义了pod.spec.hostname</li>
+<li>PodFitsHostPorts：检测pods.spec.containets.ports.hostPort是否定义</li>
+<li>MatchNodeSelector：检测pod是否设置了pods.spec.nodeSelector</li>
+<li>PodFitsResources：检测pod的资源需求是否能被节点所满足</li>
+</ol></li>
+<li>NoDiskConflict：检测pod依赖的存储卷是否能满足需求</li>
+<li>PodToleratesNodeTaints: 检测pod上的spec.tolerations可容忍的污点是否完全包含节点上的污点</li>
+<li>PodToleratesNodeNoExecuteTaints: 检测pod上是否启用了NoExecute级别的污点，默认没有启用</li>
+<li>CheckNodeLabelPresence: 检测node上的标签的存在与否，默认没有启用</li>
+<li>CheckServiceAffinity：将相同service pod的对象放到一起，默认没有启用</li>
+<li>CheckVolumeBinding：检测节点上已绑定和未绑定的volume</li>
+<li>NoVolumeZoneConflict：检测区域，是否有pod volume的冲突</li>
+<li>CheckNodeMemoryPressure：检测内存节点是否存在压力</li>
+<li>CheckNodePIDPressure：检测pid资源的情况</li>
+<li>CheckNodeDiskPressure：检测disk资源压力</li>
+<li>MatchInterPodAffity：检测pod的亲和性</li>
+<li>下面的几个策略一般用不上（EBS,GCE,Azure）对这几个云厂商的</li>
+<li>MaxEBSVolumeCount: 确保已挂载的EBS存储卷不超过设置的最大值，默认39</li>
+<li>MaxGCEPDVolumeCount: 确保已挂载的GCE存储卷不超过设置的最大值，默认16</li>
+<li>MaxAzureDiskVolumeCount: 确保已挂载的Azure存储卷不超过设置的最大值，默认16</li>
+</ol>
+
+<h4 id="优选策略">优选策略</h4>
+
+<blockquote>
+<p>优选函数的评估: 如果一个pod过来，会根据启用的全部函数的得分相加得到的评估</p>
+</blockquote>
+
+<ol>
+<li><p>LeastRequested：最少请求，与节点的总容量的比值，
+计算公式：（cpu比值+内存比值）的一半
+(cpu((capacity-sum(requested))*10 / capacity)+memory((capacity-sum(requested))*10 / capacity)) / 2</p></li>
+
+<li><p>BalancedResourceAllocation：cpu和内存资源被占用的比率相近程度，越接近，比分越高，平衡节点的资源使用情况，
+计算公式：
+cpu=cpu((capacity-sum(requested))*10 / capacity)
+mem=memory((capacity-sum(requested))*10 / capacity)</p></li>
+
+<li><p>NodePreferAvoidPods：在这个优先级中，优先级最高，得分非常高
+根据节点的注解信息“<a href="http://scheduler.alpha.kubernetes.io/preferAvoidPods”">scheduler.alpha.kubernetes.io/preferAvoidPods”</a></p></li>
+
+<li><p>TaintToleration：将pod对象的spec.tolertions与节点的taints列表项进行匹配度检测，匹配的条目越多，得分越低</p></li>
+
+<li><p>SeletorSpreading：尽可能的把pod分散开，也就是没有启动这个pod的node，得分会越高</p></li>
+
+<li><p>InterPodAffinity：遍历pod的亲和性，匹配项越多，得分就越多</p></li>
+
+<li><p>NodeAffinity：节点亲和性，亲和性高，得分高</p></li>
+
+<li><p>MostRequested：空闲量越少的，得分越高，与LeastRequested不能同时使用，集中一个机器上面跑pod，默认没有启用</p></li>
+
+<li><p>NodeLabel：根据node上面的标签来评估得分，有标签就有分，没有标签就没有分，默认没有启用</p></li>
+
+<li><p>ImageLocality：一个node的得分高低，是根据node上面是否有镜像，有镜像就有得分，反之没有（根据node上已有满足需求的image的size的大小之和来计算。），默认没有启用</p></li>
+</ol>
+
+<h2 id="kube-controller-manager">kube-controller-manager</h2>
+
+<p>就是用来控制Pod的状态和生命周期的</p>
+
+<h3 id="pod的生命周期">pod的生命周期</h3>
+
+<h4 id="pod-phase-阶段">Pod phase（阶段）</h4>
+
+<ul>
+<li>挂起（Pending）：Pod 已被 Kubernetes 系统接受，但有一个或者多个容器镜像尚未创建。等待时间包括调度 Pod 的时间和通过网络下载镜像的时间，这可能需要花点时间。</li>
+<li>运行中（Running）：该 Pod 已经绑定到了一个节点上，Pod 中所有的容器都已被创建。至少有一个容器正在运行，或者正处于启动或重启状态。</li>
+<li>成功（Succeeded）：Pod 中的所有容器都被成功终止，并且不会再重启。</li>
+<li>失败（Failed）：Pod 中的所有容器都已终止了，并且至少有一个容器是因为失败终止。也就是说，容器以非0状态退出或者被系统终止。</li>
+<li>未知（Unknown）：因为某些原因无法取得 Pod 的状态，通常是因为与 Pod 所在主机通信失败。</li>
+</ul>
+
+<p><img src="/post/images/image-20191018230800520.png" alt="image-20191018230800520" /></p>
+
+<h4 id="pod5个状态">pod5个状态</h4>
+
+<p>PodScheduled、Ready、Initialized、Unschedulable和ContainersReady</p>
+
+<h2 id="deployment-replicationcontroller-replicaset">deployment、ReplicationController、replicaset</h2>
+
+<p>Deployment 为 Pod 和 ReplicaSet 提供了一个声明式定义(declarative)方法，用来替代以前的ReplicationController 来方便的管理应用。典型的应用场景包括：</p>
+
+<ul>
+<li>定义Deployment来创建Pod和ReplicaSet</li>
+<li>滚动升级和回滚应用</li>
+<li>扩容和缩容</li>
+<li>暂停和继续Deployment</li>
+</ul>
+
+<p>ReplicationController用来确保容器应用的副本数始终保持在用户定义的副本数，即如果有容器异常退出，会自动创建新的Pod来替代；而如果异常多出来的容器也会自动回收。ReplicaSet跟ReplicationController没有本质的不同，只是名字不一样，并且ReplicaSet支持集合式的selector。</p>
+
+<p>虽然ReplicaSet可以独立使用，但一般还是建议使用 Deployment 来自动管理ReplicaSet，这样就无需担心跟其他机制的不兼容问题（比如ReplicaSet不支持rolling-update但Deployment支持）。</p>
+
+<h3 id="helm2-和helm3存储位置">Helm2 和helm3存储位置</h3>
+
+<p>helm2配置信息全部在tiller所在的名称空间存储，存储方式都是configmap方式</p>
+
+<p>helm3配置信息分布在服务自己的namespace中，存储方式是secret方式</p>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-31 17:08
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0%E7%9B%B8%E5%85%B3/">面试笔记相关</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-11-06-context%E7%9A%84%E4%BD%BF%E7%94%A8/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">context的使用</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80/">
+        <span class="next-text nav-default">函数基础</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

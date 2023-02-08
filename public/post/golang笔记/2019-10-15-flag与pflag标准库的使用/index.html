@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>flag与pflag标准库的使用 - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content="pflag 包的设计目的就是替代标准库中的 flag 包，因此它具有更强大的功能并且与标准的兼容性更好。本文将介绍 pflag 包与 flag 包相比的主要优势，
+" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-15-flag%E4%B8%8Epflag%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-15-flag%E4%B8%8Epflag%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-15-flag%E4%B8%8Epflag%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="flag与pflag标准库的使用" />
+<meta property="og:description" content="pflag 包的设计目的就是替代标准库中的 flag 包，因此它具有更强大的功能并且与标准的兼容性更好。本文将介绍 pflag 包与 flag 包相比的主要优势，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-15-flag%E4%B8%8Epflag%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8/" />
+<meta property="article:published_time" content="2019-10-15T23:16:33+08:00" />
+<meta property="article:modified_time" content="2019-10-15T23:16:33+08:00" />
+<meta itemprop="name" content="flag与pflag标准库的使用">
+<meta itemprop="description" content="pflag 包的设计目的就是替代标准库中的 flag 包，因此它具有更强大的功能并且与标准的兼容性更好。本文将介绍 pflag 包与 flag 包相比的主要优势，">
+
+
+<meta itemprop="datePublished" content="2019-10-15T23:16:33&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-15T23:16:33&#43;08:00" />
+<meta itemprop="wordCount" content="1219">
+
+
+
+<meta itemprop="keywords" content="各种标准库的使用," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="flag与pflag标准库的使用"/>
+<meta name="twitter:description" content="pflag 包的设计目的就是替代标准库中的 flag 包，因此它具有更强大的功能并且与标准的兼容性更好。本文将介绍 pflag 包与 flag 包相比的主要优势，"/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">flag与pflag标准库的使用</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-10-15 23:16 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 1219 字 </span>
+      <span class="more-meta"> 预计阅读 3 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#pflag">pflag</a>
+<ul>
+<li><a href="#pflag-包的主要特点">pflag 包的主要特点</a></li>
+<li><a href="#pflag的使用">pflag的使用</a>
+<ul>
+<li><a href="#nooptdefval-为参数设置默认值之外的值">NoOptDefVal-为参数设置默认值之外的值</a></li>
+<li><a href="#markdeprecated-指定被启用的参数">MarkDeprecated 指定被启用的参数</a></li>
+<li><a href="#markshorthanddeprecated-指定被启用的参数简写">MarkShorthandDeprecated 指定被启用的参数简写</a></li>
+<li><a href="#markhidden-隐藏参数">MarkHidden 隐藏参数</a></li>
+<li><a href="#setnormalizefunc-解决传参不规范的问题">SetNormalizeFunc 解决传参不规范的问题</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#flag">flag</a>
+<ul>
+<li><a href="#flag包练习">flag包练习</a></li>
+<li><a href="#toc_10">}</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <p>pflag 包的设计目的就是替代标准库中的 flag 包，因此它具有更强大的功能并且与标准的兼容性更好。本文将介绍 pflag 包与 flag 包相比的主要优势，</p>
+
+<h1 id="pflag">pflag</h1>
+
+<h2 id="pflag-包的主要特点">pflag 包的主要特点</h2>
+
+<p>pflag 包与 flag 包的工作原理甚至是代码实现都是类似的，下面是 pflag 相对 flag 的一些优势：</p>
+
+<ul>
+<li>支持更加精细的参数类型：例如，flag 只支持 uint 和 uint64，而 pflag 额外支持 uint8、uint16、int32 等类型。</li>
+<li>支持更多参数类型：ip、ip mask、ip net、count、以及所有类型的 slice 类型。</li>
+<li>兼容标准 flag 库的 Flag 和 FlagSet：pflag 更像是对 flag 的扩展。</li>
+<li>原生支持更丰富的功能：支持 shorthand、deprecated、hidden 等高级功能。</li>
+</ul>
+
+<h2 id="pflag的使用">pflag的使用</h2>
+
+<h3 id="nooptdefval-为参数设置默认值之外的值">NoOptDefVal-为参数设置默认值之外的值</h3>
+
+<h3 id="markdeprecated-指定被启用的参数">MarkDeprecated 指定被启用的参数</h3>
+
+<h3 id="markshorthanddeprecated-指定被启用的参数简写">MarkShorthandDeprecated 指定被启用的参数简写</h3>
+
+<h3 id="markhidden-隐藏参数">MarkHidden 隐藏参数</h3>
+
+<h3 id="setnormalizefunc-解决传参不规范的问题">SetNormalizeFunc 解决传参不规范的问题</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;strings&#34;</span>
+
+	<span class="nx">flag</span> <span class="s">&#34;github.com/spf13/pflag&#34;</span>
+<span class="p">)</span>
+
+<span class="c1">// 定义命令行参数对应的变量
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">cliName</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">StringP</span><span class="p">(</span><span class="s">&#34;name&#34;</span><span class="p">,</span> <span class="s">&#34;n&#34;</span><span class="p">,</span> <span class="s">&#34;nick&#34;</span><span class="p">,</span> <span class="s">&#34;Input your name&#34;</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">cliAge</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">IntP</span><span class="p">(</span><span class="s">&#34;age&#34;</span><span class="p">,</span> <span class="s">&#34;a&#34;</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="s">&#34;Input your age&#34;</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">cliOK</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">BoolP</span><span class="p">(</span><span class="s">&#34;ok&#34;</span><span class="p">,</span> <span class="s">&#34;o&#34;</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="s">&#34;Are you ok&#34;</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">cliDes</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">StringP</span><span class="p">(</span><span class="s">&#34;des-detail&#34;</span><span class="p">,</span> <span class="s">&#34;d&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34;Input Description&#34;</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">cliOldFlag</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">StringP</span><span class="p">(</span><span class="s">&#34;badflag&#34;</span><span class="p">,</span> <span class="s">&#34;b&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34;Input badflag&#34;</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">cliGender</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">StringP</span><span class="p">(</span><span class="s">&#34;gender&#34;</span><span class="p">,</span> <span class="s">&#34;g&#34;</span><span class="p">,</span> <span class="s">&#34;male&#34;</span><span class="p">,</span> <span class="s">&#34;Input Your Gender&#34;</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">alertUrl2</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">StringSliceP</span><span class="p">(</span><span class="s">&#34;urls&#34;</span><span class="p">,</span> <span class="s">&#34;s&#34;</span><span class="p">,</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{},</span> <span class="s">&#34;input your alertmanager cluster url&#34;</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">wordSepNormailzeFunc</span><span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">flag</span><span class="p">.</span><span class="nx">FlagSet</span><span class="p">,</span> <span class="nx">name</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">NormalizedName</span> <span class="p">{</span>
+	<span class="nx">from</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="s">&#34;_&#34;</span><span class="p">}</span>
+	<span class="nx">to</span> <span class="o">:=</span> <span class="s">&#34;.&#34;</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">sep</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">from</span> <span class="p">{</span>
+		<span class="nx">name</span> <span class="p">=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Replace</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">sep</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">flag</span><span class="p">.</span><span class="nf">NormalizedName</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c1">// 设置标准化参数名称的函数
+</span><span class="c1"></span>  <span class="c1">// 如果我们创建了名称为 --des-detail 的参数，但是用户却在传参时写成了 --des_detail 或 --des.detail 会怎么样？默认情况下程序会报错退出，但是我们可以通过 pflag 提供的 SetNormalizeFunc 功能轻松的解决这个问题
+</span><span class="c1"></span>	<span class="nx">flag</span><span class="p">.</span><span class="nx">CommandLine</span><span class="p">.</span><span class="nf">SetNormalizeFunc</span><span class="p">(</span><span class="nx">wordSepNormailzeFunc</span><span class="p">)</span>
+
+	<span class="c1">// 为 age 参数设置 NoOptDefVal 默认值，通过简便的方式为参数设置默认值之外的值
+</span><span class="c1"></span>	<span class="c1">// 使用-a 参数，不用添加任何值默认就是25，不使用-a 默认就是22
+</span><span class="c1"></span>	<span class="nx">flag</span><span class="p">.</span><span class="nf">Lookup</span><span class="p">(</span><span class="s">&#34;age&#34;</span><span class="p">).</span><span class="nx">NoOptDefVal</span> <span class="p">=</span> <span class="s">&#34;25&#34;</span>
+
+	<span class="c1">//把 badflag 参数标记为即将废弃的，请用户使用 des-detail 参数
+</span><span class="c1"></span>	<span class="c1">//./main  -b asd   Flag shorthand -b has been deprecated, please use -d instead
+</span><span class="c1"></span>	<span class="nx">flag</span><span class="p">.</span><span class="nx">CommandLine</span><span class="p">.</span><span class="nf">MarkDeprecated</span><span class="p">(</span><span class="s">&#34;badflag&#34;</span><span class="p">,</span> <span class="s">&#34;please use --des-detail instead&#34;</span><span class="p">)</span>
+
+	<span class="c1">//把 badflag 参数的 shorthand 标记为即将废弃的，请用户使用 des-detail 的 shorthand 参数
+</span><span class="c1"></span>	<span class="c1">///main  -b asd    Flag --badflag has been deprecated, please use --des-detail instead
+</span><span class="c1"></span>	<span class="nx">flag</span><span class="p">.</span><span class="nx">CommandLine</span><span class="p">.</span><span class="nf">MarkShorthandDeprecated</span><span class="p">(</span><span class="s">&#34;badflag&#34;</span><span class="p">,</span> <span class="s">&#34;please use -d instead&#34;</span><span class="p">)</span>
+
+	<span class="c1">//在帮助文档中隐藏参数 gender
+</span><span class="c1"></span>	<span class="nx">flag</span><span class="p">.</span><span class="nx">CommandLine</span><span class="p">.</span><span class="nf">MarkHidden</span><span class="p">(</span><span class="s">&#34;gender&#34;</span><span class="p">)</span>
+
+	<span class="c1">// 把用户传递的命令行参数解析为对应变量的值
+</span><span class="c1"></span>	<span class="nx">flag</span><span class="p">.</span><span class="nf">Parse</span><span class="p">()</span>
+  
+  <span class="c1">//传入一个切片
+</span><span class="c1"></span>  <span class="nx">abcde</span> <span class="o">:=</span> <span class="o">*</span><span class="nx">alertUrl2</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">abcde</span><span class="p">)</span>
+  
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="o">*</span><span class="nx">cliName</span><span class="p">,</span> <span class="o">*</span><span class="nx">cliAge</span><span class="p">,</span> <span class="o">*</span><span class="nx">cliOK</span><span class="p">,</span> <span class="o">*</span><span class="nx">cliDes</span><span class="p">,</span> <span class="o">*</span><span class="nx">cliOldFlag</span><span class="p">)</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">flag</span><span class="p">.</span><span class="nf">Args</span><span class="p">())</span>  <span class="c1">// [25 /abcd/a.jpg values2]  返回命令行参数后的其他参数，以[]string类型
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">flag</span><span class="p">.</span><span class="nf">NArg</span><span class="p">())</span>  <span class="c1">// 3 返回命令行参数后的其他未定义的参数个数
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">flag</span><span class="p">.</span><span class="nf">NFlag</span><span class="p">())</span> <span class="c1">// 4 返回使用的命令行参数个数
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="o">----</span>
+<span class="nx">localhost</span><span class="p">:</span><span class="mi">11</span><span class="nx">pflag</span> <span class="nx">liuqixiang</span><span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="nx">main</span>  <span class="o">-</span><span class="nx">h</span>
+<span class="nx">Usage</span> <span class="nx">of</span> <span class="p">.</span><span class="o">/</span><span class="nx">main</span><span class="p">:</span>
+  <span class="o">-</span><span class="nx">a</span><span class="p">,</span> <span class="o">--</span><span class="nx">age</span> <span class="kt">int</span><span class="p">[=</span><span class="mi">25</span><span class="p">]</span>        <span class="nx">Input</span> <span class="nx">your</span> <span class="nf">age</span> <span class="p">(</span><span class="k">default</span> <span class="mi">22</span><span class="p">)</span>
+  <span class="o">-</span><span class="nx">d</span><span class="p">,</span> <span class="o">--</span><span class="nx">des</span><span class="p">.</span><span class="nx">detail</span> <span class="kt">string</span>   <span class="nx">Input</span> <span class="nx">Description</span>
+  <span class="o">-</span><span class="nx">n</span><span class="p">,</span> <span class="o">--</span><span class="nx">name</span> <span class="kt">string</span>         <span class="nx">Input</span> <span class="nx">your</span> <span class="nf">name</span> <span class="p">(</span><span class="k">default</span> <span class="s">&#34;nick&#34;</span><span class="p">)</span>
+  <span class="o">-</span><span class="nx">o</span><span class="p">,</span> <span class="o">--</span><span class="nx">ok</span>                  <span class="nx">Are</span> <span class="nx">you</span> <span class="nx">ok</span>
+<span class="nx">pflag</span><span class="p">:</span> <span class="nx">help</span> <span class="nx">requested</span>
+                                             
+<span class="nx">localhost</span><span class="p">:</span><span class="mi">11</span><span class="nx">pflag</span> <span class="nx">liuqixiang</span><span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="nx">main</span>  <span class="o">-</span><span class="nx">b</span> <span class="nx">abc</span>
+<span class="nx">Flag</span> <span class="nx">shorthand</span> <span class="o">-</span><span class="nx">b</span> <span class="nx">has</span> <span class="nx">been</span> <span class="nx">deprecated</span><span class="p">,</span> <span class="nx">please</span> <span class="nx">use</span> <span class="o">-</span><span class="nx">d</span> <span class="nx">instead</span>
+<span class="nx">Flag</span> <span class="o">--</span><span class="nx">badflag</span> <span class="nx">has</span> <span class="nx">been</span> <span class="nx">deprecated</span><span class="p">,</span> <span class="nx">please</span> <span class="nx">use</span> <span class="o">--</span><span class="nx">des</span><span class="o">-</span><span class="nx">detail</span> <span class="nx">instead</span>
+<span class="nx">nick</span> <span class="mi">22</span> <span class="kc">false</span>  <span class="nx">abc</span>
+                                             
+<span class="nx">localhost</span><span class="p">:</span><span class="mi">11</span><span class="nx">pflag</span> <span class="nx">liuqixiang</span><span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="nx">main</span>  <span class="o">-</span><span class="nx">g</span> <span class="nx">abc</span>
+<span class="nx">nick</span> <span class="mi">22</span> <span class="kc">false</span>  </code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="flag">flag</h1>
+
+<h2 id="flag包练习">flag包练习</h2>
+
+<p>```go
+func main() {
+    //定义命令行参数方式1
+    var name string
+    var age int
+    var married bool
+    var delay time.Duration
+    flag.StringVar(&amp;name, &quot;name&quot;, &quot;张三&quot;, &quot;姓名&quot;)
+    flag.IntVar(&amp;age, &quot;age&quot;, 18, &quot;年龄&quot;)
+    flag.BoolVar(&amp;married, &quot;married&quot;, false, &quot;婚否&quot;)
+    flag.DurationVar(&amp;delay, &quot;d&quot;, 0, &quot;延迟的时间间隔&quot;)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">//解析命令行参数
+flag.Parse()
+fmt.Println(name, age, married, delay)
+//返回命令行参数后的其他参数
+fmt.Println(flag.Args())
+//返回命令行参数后的其他参数个数
+fmt.Println(flag.NArg())
+//返回使用的命令行参数个数
+fmt.Println(flag.NFlag())</pre></td></tr></table>
+</div>
+</div>
+<h2 id="toc_10">}</h2>
+
+<p>$ ./flag_demo -help
+Usage of ./flag_demo:
+  -age int
+        年龄 (default 18)
+  -d duration
+        时间间隔
+  -married
+        婚否
+  -name string
+        姓名 (default &quot;张三&quot;)</p>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-15 23:16
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/%E5%90%84%E7%A7%8D%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8/">各种标准库的使用</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-18-%E7%BB%93%E6%9E%84%E4%BD%93-struct/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">结构体-struct</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-15-go%E6%93%8D%E4%BD%9Cetcd/">
+        <span class="next-text nav-default">go操作etc</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gorouting on Mr.Liu World</title>
+    <link>https://qixiang-liu.github.io/tags/gorouting/</link>
+    <description>Recent content in gorouting on Mr.Liu World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 11 Dec 2019 10:27:29 +0800</lastBuildDate>
+    
+	<atom:link href="https://qixiang-liu.github.io/tags/gorouting/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>并发安全锁与原子操作</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-12-11-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%94%81%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Wed, 11 Dec 2019 10:27:29 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-12-11-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%94%81%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>goroutine和channel练习题</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-goroutine%E5%92%8Cchannel%E7%BB%83%E4%B9%A0%E9%A2%98/</link>
+      <pubDate>Wed, 30 Oct 2019 21:26:19 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-goroutine%E5%92%8Cchannel%E7%BB%83%E4%B9%A0%E9%A2%98/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>goroutine与GMP模型</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-goroutine%E4%B8%8EGMP%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Wed, 30 Oct 2019 20:52:28 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-goroutine%E4%B8%8EGMP%E6%A8%A1%E5%9E%8B/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;前言：Go语言在语言层面实现并发。Go编写一个并发编程程序很简单，只需要在函数调用之前使用一个&lt;code&gt;go&lt;/code&gt;关键字即可启动一个goroutine执行并发。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;虽然使用一个&lt;code&gt;go&lt;/code&gt;关键字即可实现并发编程，但是是这个关键字的背后的实现非常复杂。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>gorouting和channel类型</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-gorouting%E5%92%8Cchannel%E7%B1%BB%E5%9E%8B/</link>
+      <pubDate>Wed, 30 Oct 2019 20:13:55 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-30-gorouting%E5%92%8Cchannel%E7%B1%BB%E5%9E%8B/</guid>
+      <description>&lt;p&gt;并发和并行的区别：&lt;/p&gt;
+
+&lt;p&gt;​   并发：同一时间段内执行多个任务&lt;/p&gt;
+
+&lt;p&gt;​   并行：同一时刻执行多个任务&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

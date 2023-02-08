@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>etcd原理 - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content="" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-22-etcd%E5%8E%9F%E7%90%86/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-22-etcd%E5%8E%9F%E7%90%86/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-22-etcd%E5%8E%9F%E7%90%86/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="etcd原理" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-22-etcd%E5%8E%9F%E7%90%86/" />
+<meta property="article:published_time" content="2019-10-22T16:32:53+08:00" />
+<meta property="article:modified_time" content="2019-10-22T16:32:53+08:00" />
+<meta itemprop="name" content="etcd原理">
+<meta itemprop="description" content="">
+
+
+<meta itemprop="datePublished" content="2019-10-22T16:32:53&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-22T16:32:53&#43;08:00" />
+<meta itemprop="wordCount" content="1702">
+
+
+
+<meta itemprop="keywords" content="面试笔记相关," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="etcd原理"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">etcd原理</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-10-22 16:32 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 1702 字 </span>
+      <span class="more-meta"> 预计阅读 4 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#etcd的raft协议原理">etcd的raft协议原理</a>
+<ul>
+<li><a href="#领导者选举">领导者选举</a></li>
+<li><a href="#停止领导者-让集群重新选举">停止领导者，让集群重新选举</a></li>
+<li><a href="#拆分表决-俩个节点都以相同任期进行选举">拆分表决，俩个节点都以相同任期进行选举</a></li>
+<li><a href="#集群网络出现问题-导致出现脑裂如何解决-以及日志复制的过程">集群网络出现问题，导致出现脑裂如何解决，以及日志复制的过程</a></li>
+</ul></li>
+<li><a href="#etcd是如何实现一致性的">Etcd是如何实现一致性的？</a></li>
+<li><a href="#etcd的存储是如何实现的">Etcd的存储是如何实现的？</a></li>
+<li><a href="#etcd的watch机制是如何实现的">Etcd的watch机制是如何实现的？</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <h1 id="etcd的raft协议原理">etcd的raft协议原理</h1>
+
+<p>分布式共识原理，理解实例：</p>
+
+<p>第一阶段：一个节点很容易就达成协议或者共识</p>
+
+<p><img src="/post/images/image-20191021161903881.png" alt="image-20191021161903881" /></p>
+
+<p>第二阶段：如果是多个节点如何达成共识？分布式共识问题</p>
+
+<p>raft协议规定每个节点都有3个状态：<strong>跟随，候选，领导者</strong></p>
+
+<p>下面俩个图是领导人选举的过程：</p>
+
+<p><img src="/post/images/image-20191021162540274.png" alt="image-20191021162540274" /></p>
+
+<p><img src="/post/images/image-20191021162737492.png" alt="image-20191021162737492" /></p>
+
+<p>第三阶段：日志复制到数据写入过程，达到共识</p>
+
+<p><img src="/post/images/image-20191021164634644.png" alt="image-20191021164634644" /></p>
+
+<p><img src="/post/images/image-20191022101035002.png" alt="image-20191022101035002" /></p>
+
+<ol>
+<li>客户端发送（数据5）到主节点，主节点会保存更改信息到节点日志中然后生成一个（日志条目5）</li>
+<li>服务端主节点当前的（日志条目5）是没有提交的，然后需要将（日志条目5）复制到跟随节点上。</li>
+<li>主节点等待大多数跟随节点都记录了该日志（日志条目5），然后主节点提交（数据5）写入</li>
+<li>主节点返回给客户端数据写入成功</li>
+<li>然后通知跟随者这个（日志条目5）已经提交写入，跟随者自己提交（数据5）写入，达到共识。</li>
+</ol>
+
+<h2 id="领导者选举">领导者选举</h2>
+
+<blockquote>
+<p>选举超时时间被随机分配在150ms-300ms之间</p>
+
+<p>时钟周期（term）：也就是选举届次，leader节点发生变化，就会到下一届选举。term就会加1</p>
+</blockquote>
+
+<p><img src="/post/images/image-20191021165732888.png" alt="image-20191021165732888" /></p>
+
+<ol>
+<li>各个节点随机获取超时时间，决定谁先变成候选者</li>
+</ol>
+
+<p><img src="/post/images/image-20191021171458752.png" alt="image-20191021171458752" /></p>
+
+<ol>
+<li>候选者向各个追随者发起投票请求</li>
+<li>如果跟随者这届还没有投票，那么将投票给候选人。并重置自身的选举超时时间</li>
+<li>候选者获得获得大多数追随者的投票后变成领导者</li>
+<li>领导者开始向追随者发起心跳探测，以及发送日志条目给追随者，追随者响应每一条日志条目。然后每次都重置自身的选举超时时间</li>
+</ol>
+
+<h2 id="停止领导者-让集群重新选举">停止领导者，让集群重新选举</h2>
+
+<p><img src="/post/images/image-20191021172029944.png" alt="image-20191021172029944" /></p>
+
+<ol>
+<li>停止领导者，全部节点进入下一个时钟周期，开始进行超时时间，获取候选者的权利</li>
+<li>最先为候选者的节点，发布投票，变成新的领导者</li>
+</ol>
+
+<h2 id="拆分表决-俩个节点都以相同任期进行选举">拆分表决，俩个节点都以相同任期进行选举</h2>
+
+<p><img src="/post/images/image-20191021172424737.png" alt="image-20191021172424737" /></p>
+
+<ol>
+<li><p>俩个节点同时变为候选者，同时发起投票。</p></li>
+
+<li><p>每个都先到达一个跟随者节点，然后投票中，每个候选者都是两票。出现相同的票数</p></li>
+</ol>
+
+<p><img src="/post/images/image-20191022100608600.png" alt="image-20191022100608600" /></p>
+
+<ol>
+<li><p>通过超时时间，等待新的一轮时钟周期（选举），再选举一次。</p></li>
+
+<li><p>直到有节点获取多数选票，变成领导者为止。</p></li>
+</ol>
+
+<h2 id="集群网络出现问题-导致出现脑裂如何解决-以及日志复制的过程">集群网络出现问题，导致出现脑裂如何解决，以及日志复制的过程</h2>
+
+<blockquote>
+<p>A&amp;B 与C&amp;D&amp;E 变成俩个网络环境，集群A&amp;B是正常的，还能正常通信，然后C&amp;D&amp;E 没有领导节点了，需要选举新的领导节点</p>
+</blockquote>
+
+<p><img src="/post/images/image-20191022101351101.png" alt="image-20191022101351101" /></p>
+
+<ol>
+<li><p>C&amp;D&amp;E没有领导节点发来的超时时间了，因此开始进入超时时间，争抢下一届的候选者的投票权</p></li>
+
+<li><p>根据投票最多的节点变成领导节点。</p></li>
+</ol>
+
+<p><img src="/post/images/image-20191022101901664.png" alt="image-20191022101901664" /></p>
+
+<ol>
+<li><p>这时候出现俩个客户端发送数据到俩个集群中。客户端1发送数据8到C&amp;D&amp;E集群，客户端2发送数据3到A&amp;B集群。</p></li>
+
+<li><p>此时出现，C&amp;D&amp;E集群条目复制到跟随者，然后大多数跟随者返回响应，领导者把（数据8）写入成功。并且返回给客户端1；A&amp;B集群（日志条目3）信息复制到跟随者，但是由于集群还保持着之前5个节点的状态，无法收到大多数跟随者返回的响应，导致领导者和跟随者节点（日志条目3）一直是未提交的状态。（数据3）无法写入集群</p></li>
+</ol>
+
+<p><img src="/post/images/image-20191022103039745.png" alt="image-20191022103039745" /></p>
+
+<ol>
+<li><p>网络恢复后,nodeB看到有更高的选举期限的节点，自己就会让出领导者的位置</p></li>
+
+<li><p>然后nodeA和nodeB回滚自己未提交的（日志条目3）</p></li>
+
+<li><p>新领导者的日志条目以心跳的方式同步给各个追随者，然后获取（日志条目8）提交（数据8）完成同步</p></li>
+
+<li><p>现在集群中日志在整个集群中是一致性</p></li>
+</ol>
+
+<h1 id="etcd是如何实现一致性的">Etcd是如何实现一致性的？</h1>
+
+<ul>
+<li><p>raft通过对不同的场景（选主，日志复制）设计不同的机制，虽然降低了通用性（相对paxos），但同时也降低了复杂度，便于理解和实现。</p></li>
+
+<li><p>raft内置的选主协议是给自己用的，用于选出主节点，理解raft的选主机制的关键在于理解raft的时钟周期以及超时机制。</p></li>
+</ul>
+
+<p><strong>时钟周期(选举任期)：</strong>如果集群出现脑裂，会进入下一届选举，选举出新的集群leader，此时集群中出现不同选举届选举的leader，如果集群恢复，会以最高届选举产生的leader为主。term，每个term代表一个主节点的任期，每次主节点变更term就会变化。</p>
+
+<p><strong>超时时间：</strong>随机时间超时（150ms-300ms）让各个node的争抢候选者使用选举权</p>
+
+<ul>
+<li>理解 Etcd 的数据同步的关键在于理解raft的日志同步机制。
+
+<br /></li>
+</ul>
+
+<h1 id="etcd的存储是如何实现的">Etcd的存储是如何实现的？</h1>
+
+<blockquote>
+<p>Etcd v2 和 v3 本质上是共享同一套 raft 协议代码的两个独立的应用，接口不一样，存储不一样，数据互相隔离</p>
+</blockquote>
+
+<h1 id="etcd的watch机制是如何实现的">Etcd的watch机制是如何实现的？</h1>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-22 16:32
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0%E7%9B%B8%E5%85%B3/">面试笔记相关</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-28-1-gin%E5%85%A5%E9%97%A8%E5%92%8C%E8%B7%AF%E7%94%B1/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">1-gin入门和路由</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-20-grpc%E9%80%9A%E4%BF%A1/">
+        <span class="next-text nav-default">grpc通信</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

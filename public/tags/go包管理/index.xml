@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go包管理 on Mr.Liu World</title>
+    <link>https://qixiang-liu.github.io/tags/go%E5%8C%85%E7%AE%A1%E7%90%86/</link>
+    <description>Recent content in go包管理 on Mr.Liu World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 03 Aug 2019 22:21:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://qixiang-liu.github.io/tags/go%E5%8C%85%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>包嵌套</title>
+      <link>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-08-03-%E5%8C%85%E5%B5%8C%E5%A5%97/</link>
+      <pubDate>Sat, 03 Aug 2019 22:21:46 +0800</pubDate>
+      
+      <guid>https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-08-03-%E5%8C%85%E5%B5%8C%E5%A5%97/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

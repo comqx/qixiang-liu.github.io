@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>go操作es - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content=" ​ 前言：elasticsearch 是一个基于Lucene构建的开源的、分布式、restful接口的全文搜索引擎。es还是一个分布式的文档数据库，其中每个字段均可被索引，而且每个字段的数据均可被搜索。es扩展能力很强，可以扩展到几百台服务器以及处理PB级的数据。可以在短时间内存储、搜索和分析大量的数据。通常应用于复杂搜索场景情况下的核心发动机
+" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-13-go%E6%93%8D%E4%BD%9Ces/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-13-go%E6%93%8D%E4%BD%9Ces/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-13-go%E6%93%8D%E4%BD%9Ces/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="go操作es" />
+<meta property="og:description" content="
+​     前言：elasticsearch 是一个基于Lucene构建的开源的、分布式、restful接口的全文搜索引擎。es还是一个分布式的文档数据库，其中每个字段均可被索引，而且每个字段的数据均可被搜索。es扩展能力很强，可以扩展到几百台服务器以及处理PB级的数据。可以在短时间内存储、搜索和分析大量的数据。通常应用于复杂搜索场景情况下的核心发动机
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-10-13-go%E6%93%8D%E4%BD%9Ces/" />
+<meta property="article:published_time" content="2019-10-13T17:06:17+08:00" />
+<meta property="article:modified_time" content="2019-10-13T17:06:17+08:00" />
+<meta itemprop="name" content="go操作es">
+<meta itemprop="description" content="
+​     前言：elasticsearch 是一个基于Lucene构建的开源的、分布式、restful接口的全文搜索引擎。es还是一个分布式的文档数据库，其中每个字段均可被索引，而且每个字段的数据均可被搜索。es扩展能力很强，可以扩展到几百台服务器以及处理PB级的数据。可以在短时间内存储、搜索和分析大量的数据。通常应用于复杂搜索场景情况下的核心发动机
+">
+
+
+<meta itemprop="datePublished" content="2019-10-13T17:06:17&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-13T17:06:17&#43;08:00" />
+<meta itemprop="wordCount" content="3434">
+
+
+
+<meta itemprop="keywords" content="操作各个服务," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="go操作es"/>
+<meta name="twitter:description" content="
+​     前言：elasticsearch 是一个基于Lucene构建的开源的、分布式、restful接口的全文搜索引擎。es还是一个分布式的文档数据库，其中每个字段均可被索引，而且每个字段的数据均可被搜索。es扩展能力很强，可以扩展到几百台服务器以及处理PB级的数据。可以在短时间内存储、搜索和分析大量的数据。通常应用于复杂搜索场景情况下的核心发动机
+"/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">go操作es</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-10-13 17:06 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 3434 字 </span>
+      <span class="more-meta"> 预计阅读 7 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#elasticsearch">elasticsearch</a>
+<ul>
+<li><a href="#es能做什么">es能做什么</a></li>
+<li><a href="#elasticsearch基本概念">elasticsearch基本概念</a>
+<ul>
+<li><a href="#near-realtime-nrt-几乎实时">Near Realtime(NRT)几乎实时</a></li>
+<li><a href="#cluster集群">cluster集群</a></li>
+<li><a href="#node节点">Node节点</a></li>
+<li><a href="#index索引-类似于库">Index索引（类似于库）</a></li>
+<li><a href="#type类型-类似于表">Type类型（类似于表）</a></li>
+<li><a href="#document文档-类型于数据行">Document文档（类型于数据行）</a></li>
+<li><a href="#shards-replicas分片与副本">Shards &amp; Replicas分片与副本</a>
+<ul>
+<li><a href="#shards分片的重要性主要体现俩个特征">Shards分片的重要性主要体现俩个特征</a></li>
+<li><a href="#replicas副本的重要性主要体现俩个特征">Replicas副本的重要性主要体现俩个特征</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#es基本概念与关系型数据库的比较">ES基本概念与关系型数据库的比较</a></li>
+</ul></li>
+<li><a href="#es-restful-api">es restful API</a>
+<ul>
+<li><a href="#查询相关">查询相关</a></li>
+<li><a href="#创建相关">创建相关</a></li>
+<li><a href="#删除相关">删除相关</a></li>
+<li><a href="#插入相关">插入相关</a></li>
+<li><a href="#检索相关">检索相关</a></li>
+</ul></li>
+<li><a href="#go操作elasticsearch">go操作elasticsearch</a>
+<ul>
+<li><a href="#elastic-client">elastic client</a></li>
+<li><a href="#实例">实例</a></li>
+<li><a href="#问题整理">问题整理</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <blockquote>
+<p>​     前言：elasticsearch 是一个基于Lucene构建的开源的、分布式、restful接口的全文搜索引擎。es还是一个分布式的文档数据库，其中每个字段均可被索引，而且每个字段的数据均可被搜索。es扩展能力很强，可以扩展到几百台服务器以及处理PB级的数据。可以在短时间内存储、搜索和分析大量的数据。通常应用于复杂搜索场景情况下的核心发动机</p>
+</blockquote>
+
+<h1 id="elasticsearch">elasticsearch</h1>
+
+<p>快速理解es：<a href="http://developer.51cto.com/art/201904/594615.htm">http://developer.51cto.com/art/201904/594615.htm</a></p>
+
+<h2 id="es能做什么">es能做什么</h2>
+
+<ol>
+<li>当你经营一家网上商店，你可以让你的客户搜索你卖的商品。在这种情况下，你可以使用ElasticSearch来存储你的整个产品目录和库存信息，为客户提供精准搜索，可以为客户推荐相关商品。</li>
+<li>当你想收集日志或者交易数据的时候，需要分析和挖掘这些数据，寻找趋势，进行统计，总结，或发现异常。在这种情况下，你可以使用Logstash或者其他工具来进行收集数据，当这引起数据存储到ElasticsSearch中。你可以搜索和汇总这些数据，找到任何你感兴趣的信息。</li>
+<li>对于程序员来说，比较有名的案例是GitHub，GitHub的搜索是基于ElasticSearch构建的，在github.com/search页面，你可以搜索项目、用户、issue、pull request，还有代码。共有40~50个索引库，分别用于索引网站需要跟踪的各种数据。虽然只索引项目的主分支（master），但这个数据量依然巨大，包括20亿个索引文档，30TB的索引文件。</li>
+</ol>
+
+<h2 id="elasticsearch基本概念">elasticsearch基本概念</h2>
+
+<h3 id="near-realtime-nrt-几乎实时">Near Realtime(NRT)几乎实时</h3>
+
+<p>​       elasticsearch是一个几乎实时的搜索平台。从索引一个文档到这个文档可被搜索只需要很短的时间，一般为毫秒级</p>
+
+<h3 id="cluster集群">cluster集群</h3>
+
+<p>​       集群是一个或者多个节点的集合，<strong>这些节点共同保存整个数据，并在所有节点上提供联合索引和搜索功能。</strong>一个集群由一个唯一集群ID确定，并指定一个集群名（默认为elasticsearch）。该集群名非常重要，因为节点可通过这个集群名来加入集群，一个节点只能是集群的一部分。<br></p>
+
+<p>​       确保在不同的环境中不要使用相同的集群名称，否则可能导致连接到错误的集群节点。</p>
+
+<h3 id="node节点">Node节点</h3>
+
+<p>​       节点是单个服务器实例，它是群集的一部分，<strong>可以存储数据</strong>，<strong>并参与群集的索引和搜索功能</strong>。就像一个集群，节点的名称默认为一个随机的通用唯一标识符（UUID），确定在启动时分配给该节点。如果不希望默认，可以定义任何节点名。这个名字对管理很重要，目的是要确定你的网络服务器对应于你的ElasticSearch群集节点。<br></p>
+
+<p>​       我们可以通过群集名配置节点以连接特定的群集。默认情况下，每个节点设置加入名为“elasticSearch”的集群。这意味着如果你启动多个节点在网络上，假设他们能发现彼此都会自动形成和加入一个名为“elasticsearch”的集群。<br></p>
+
+<p>​       在单个群集中，你可以拥有尽可能多的节点。此外，<strong>如果“elasticsearch”在同一个网络中，没有其他节点正在运行，从单个节点的默认情况下会形成一个新的单节点名为”elasticsearch”的集群</strong>。<br></p>
+
+<h3 id="index索引-类似于库">Index索引（类似于库）</h3>
+
+<p>​       索引是具有相似特性的文档集合。例如，可以为客户数据提供索引，为产品目录建立另一个索引，以及为订单数据建立另一个索引。索引由名称（必须全部为小写）标识，该名称用于在对其中的文档执行索引、搜索、更新和删除操作时引用索引。在单个群集中，你可以定义尽可能多的索引。</p>
+
+<h3 id="type类型-类似于表">Type类型（类似于表）</h3>
+
+<p>​       在索引中，可以定义一个或多个类型。<strong>类型是索引的逻辑类别/分区</strong>，其语义完全取决于你。一般来说，类型定义为具有公共字段集的文档。例如，假设你运行一个博客平台，并将所有数据存储在一个索引中。在这个索引中，你可以为用户数据定义一种类型，为博客数据定义另一种类型，以及为注释数据定义另一类型。</p>
+
+<h3 id="document文档-类型于数据行">Document文档（类型于数据行）</h3>
+
+<p>​       <strong>文档是可以被索引的信息的基本单位</strong>。例如，你可以为单个客户提供一个文档，单个产品提供另一个文档，以及单个订单提供另一个文档。本文件的表示形式为JSON（JavaScript Object Notation）格式，这是一种非常普遍的互联网数据交换格式。<br></p>
+
+<p>​       在索引/类型中，你可以存储尽可能多的文档。请注意，尽管文档物理驻留在索引中，文档实际上必须索引或分配到索引中的类型。</p>
+
+<h3 id="shards-replicas分片与副本">Shards &amp; Replicas分片与副本</h3>
+
+<p>​       索引可以存储大量的数据，这些数据可能超过单个节点的硬件限制。例如，十亿个文件占用磁盘空间1TB的单指标可能不适合对单个节点的磁盘或可能太慢服务仅从单个节点的搜索请求。<br></p>
+
+<p>​       为了解决这一问题，Elasticsearch提供<strong>细分你的指标分成多个块称为分片的能力。当你创建一个索引，你可以简单地定义你想要的分片数量。每个分片本身是一个全功能的、独立的“指数”，可以托管在集群中的任何节点。</strong></p>
+
+<h4 id="shards分片的重要性主要体现俩个特征">Shards分片的重要性主要体现俩个特征</h4>
+
+<ol>
+<li><p>分片允许你水平拆分或缩放内容的大小<br></p></li>
+
+<li><p>分片允许你分配和并行操作的碎片（可能在多个节点上）从而提高性能/吞吐量 这个机制中的碎片是分布式的以及其文件汇总到搜索请求是完全由ElasticSearch管理，对用户来说是透明的。<br></p>
+
+<p>在同一个集群网络或云环境上，故障是任何时候都会出现的，拥有一个故障转移机制以防分片和节点因为某些原因离线或消失是非常有用的，并且被强烈推荐。为此，Elasticsearch允许你创建一个或多个拷贝，你的索引分片进入所谓的副本或称作复制品的分片，简称Replicas。</p></li>
+</ol>
+
+<h4 id="replicas副本的重要性主要体现俩个特征">Replicas副本的重要性主要体现俩个特征</h4>
+
+<ol>
+<li>副本为分片或节点失败提供了高可用性。为此，需要注意的是，一个副本的分片不会分配在同一个节点作为原始的或主分片，副本是从主分片那里复制过来的。</li>
+<li>副本允许用户扩展你的搜索量或吞吐量，因为搜索可以在所有副本上并行执行。</li>
+</ol>
+
+<h2 id="es基本概念与关系型数据库的比较">ES基本概念与关系型数据库的比较</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left">ES概念</th>
+<th align="left">关系型数据库</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">Index（索引）支持全文检索</td>
+<td align="left">Database（数据库）</td>
+</tr>
+
+<tr>
+<td align="left">Type（类型）</td>
+<td align="left">Table（表）</td>
+</tr>
+
+<tr>
+<td align="left">Document（文档），不同文档可以有不同的字段集合</td>
+<td align="left">Row（数据行）</td>
+</tr>
+
+<tr>
+<td align="left">Field（字段）</td>
+<td align="left">Column（数据列）</td>
+</tr>
+
+<tr>
+<td align="left">Mapping（映射）</td>
+<td align="left">Schema（模式）</td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="es-restful-api">es restful API</h1>
+
+<h2 id="查询相关">查询相关</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 查看健康状态</span>
+curl -X GET <span class="m">127</span>.0.0.1:9200/_cat/health?v
+&gt;epoch      timestamp cluster        status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+<span class="m">1570719865</span> <span class="m">15</span>:04:25  docker-cluster green           <span class="m">1</span>         <span class="m">1</span>      <span class="m">0</span>   <span class="m">0</span>    <span class="m">0</span>    <span class="m">0</span>        <span class="m">0</span>             <span class="m">0</span>                  -                <span class="m">100</span>.0%
+
+<span class="c1"># 查询当前es集群中所有的indices （索引）</span>
+curl -X GET <span class="m">127</span>.0.0.1:9200/_cat/indices?v
+&gt;health status index uuid pri rep docs.count docs.deleted store.size pri.store.size</code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="创建相关">创建相关</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-SHELL" data-lang="SHELL"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-SHELL" data-lang="SHELL"><span class="c1"># 创建索引</span>
+curl -X PUT <span class="m">127</span>.0.0.1:9200/www</code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="删除相关">删除相关</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 删除索引</span>
+curl -X DELETE <span class="m">127</span>.0.0.1:9200/www</code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="插入相关">插入相关</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 插入记录</span>
+curl -H <span class="s2">&#34;Content-Type:application/json&#34;</span> -X POST <span class="m">127</span>.0.0.1:9200/user/person -d <span class="s1">&#39;
+</span><span class="s1">{
+</span><span class="s1">	&#34;name&#34;: &#34;dsb&#34;,
+</span><span class="s1">	&#34;age&#34;: 9000,
+</span><span class="s1">	&#34;married&#34;: true
+</span><span class="s1">}&#39;</span>
+
+<span class="c1">#输出：</span>
+<span class="o">{</span>
+    <span class="s2">&#34;_index&#34;</span>: <span class="s2">&#34;user&#34;</span>, <span class="c1"># 索引</span>
+    <span class="s2">&#34;_type&#34;</span>: <span class="s2">&#34;person&#34;</span>, <span class="c1"># 类型</span>
+    <span class="s2">&#34;_id&#34;</span>: <span class="s2">&#34;MLcwUWwBvEa8j5UrLZj4&#34;</span>, <span class="c1"># 生成的id</span>
+    <span class="s2">&#34;_version&#34;</span>: <span class="m">1</span>,
+    <span class="s2">&#34;result&#34;</span>: <span class="s2">&#34;created&#34;</span>, 
+    <span class="s2">&#34;_shards&#34;</span>: <span class="o">{</span>
+        <span class="s2">&#34;total&#34;</span>: <span class="m">2</span>, 
+        <span class="s2">&#34;successful&#34;</span>: <span class="m">1</span>,
+        <span class="s2">&#34;failed&#34;</span>: <span class="m">0</span>
+    <span class="o">}</span>,
+    <span class="s2">&#34;_seq_no&#34;</span>: <span class="m">3</span>, 
+    <span class="s2">&#34;_primary_term&#34;</span>: <span class="m">1</span>
+<span class="o">}</span>
+
+<span class="c1"># 也可以使用put，但是需要传入id</span>
+curl -H <span class="s2">&#34;Content-Type:application/json&#34;</span> -X PUT <span class="m">127</span>.0.0.1:9200/user/person/4 -d <span class="s1">&#39;
+</span><span class="s1">{
+</span><span class="s1">	&#34;name&#34;: &#34;sb&#34;,
+</span><span class="s1">	&#34;age&#34;: 9,
+</span><span class="s1">	&#34;married&#34;: false
+</span><span class="s1">}&#39;</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="检索相关">检索相关</h2>
+
+<blockquote>
+<p>Elasticsearch的检索语法比较特别，使用GET方法携带JSON格式的查询条件。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 全检索</span>
+curl -X GET <span class="m">127</span>.0.0.1:9200/user/person/_search
+
+<span class="c1"># 按条件检索：</span>
+curl -H <span class="s2">&#34;Content-Type:application/json&#34;</span> -X PUT <span class="m">127</span>.0.0.1:9200/user/person/4 -d <span class="s1">&#39;
+</span><span class="s1">{
+</span><span class="s1">	&#34;query&#34;:{
+</span><span class="s1">		&#34;match&#34;: {&#34;name&#34;: &#34;sb&#34;}
+</span><span class="s1">	}	
+</span><span class="s1">}&#39;</span>
+
+<span class="c1"># ElasticSearch默认一次最多返回10条结果，可以像下面的示例通过size字段来设置返回结果的数目。</span>
+curl -H <span class="s2">&#34;Content-Type:application/json&#34;</span> -X PUT <span class="m">127</span>.0.0.1:9200/user/person/4 -d <span class="s1">&#39;
+</span><span class="s1">{
+</span><span class="s1">	&#34;query&#34;:{
+</span><span class="s1">		&#34;match&#34;: {&#34;name&#34;: &#34;sb&#34;},
+</span><span class="s1">		&#34;size&#34;: 2
+</span><span class="s1">	}	
+</span><span class="s1">}&#39;</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="go操作elasticsearch">go操作elasticsearch</h1>
+
+<h2 id="elastic-client">elastic client</h2>
+
+<p>使用第三方库<a href="https://github.com/olivere/elastic来连接ES并进行操作。">https://github.com/olivere/elastic来连接ES并进行操作。</a></p>
+
+<p>注意下载与你的ES相同版本的client，例如我们这里使用的ES是7.2.1的版本，那么我们下载的client也要与之对应为<code>github.com/olivere/elastic/v7</code>。</p>
+
+<p>使用<code>go.mod</code>来管理依赖：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nf">require</span> <span class="p">(</span>
+    <span class="nx">github</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">olivere</span><span class="o">/</span><span class="nx">elastic</span><span class="o">/</span><span class="nx">v7</span> <span class="nx">v7</span><span class="mf">.0.4</span>
+<span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="实例">实例</h2>
+
+<blockquote>
+<p>更多操作查看：<a href="https://godoc.org/github.com/olivere/elastic">https://godoc.org/github.com/olivere/elastic</a></p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;context&#34;</span>
+	<span class="s">&#34;fmt&#34;</span>
+
+	<span class="s">&#34;github.com/olivere/elastic/v7&#34;</span>
+<span class="p">)</span>
+
+<span class="c1">// Elasticsearch demo
+</span><span class="c1"></span>
+<span class="kd">type</span> <span class="nx">Person</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Name</span>    <span class="kt">string</span> <span class="s">`json:&#34;name&#34;`</span>
+	<span class="nx">Age</span>     <span class="kt">int</span>    <span class="s">`json:&#34;age&#34;`</span>
+	<span class="nx">Married</span> <span class="kt">bool</span>   <span class="s">`json:&#34;married&#34;`</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">client</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">elastic</span><span class="p">.</span><span class="nf">NewClient</span><span class="p">(</span><span class="nx">elastic</span><span class="p">.</span><span class="nf">SetSniff</span><span class="p">(</span><span class="kc">false</span><span class="p">),</span><span class="nx">elastic</span><span class="p">.</span><span class="nf">SetURL</span><span class="p">(</span><span class="s">&#34;http://192.168.1.7:9200&#34;</span><span class="p">))</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="c1">// Handle error
+</span><span class="c1"></span>		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;connect to es success&#34;</span><span class="p">)</span>
+	<span class="nx">p1</span> <span class="o">:=</span> <span class="nx">Person</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;rion&#34;</span><span class="p">,</span> <span class="nx">Age</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span> <span class="nx">Married</span><span class="p">:</span> <span class="kc">false</span><span class="p">}</span>
+	<span class="nx">put1</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">client</span><span class="p">.</span><span class="nf">Index</span><span class="p">().</span>
+		<span class="nf">Index</span><span class="p">(</span><span class="s">&#34;user&#34;</span><span class="p">).</span>
+		<span class="nf">BodyJson</span><span class="p">(</span><span class="nx">p1</span><span class="p">).</span>
+		<span class="nf">Do</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">())</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="c1">// Handle error
+</span><span class="c1"></span>		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Indexed user %s to index %s, type %s\n&#34;</span><span class="p">,</span> <span class="nx">put1</span><span class="p">.</span><span class="nx">Id</span><span class="p">,</span> <span class="nx">put1</span><span class="p">.</span><span class="nx">Index</span><span class="p">,</span> <span class="nx">put1</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="问题整理">问题整理</h2>
+
+<blockquote>
+<p>通过 elastic.v5 驱动连接 ES 有具体报错：“no Elasticsearch node available”
+通过 http 访问的访问仍然能够正常打印出来 ES 的提示信息</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-GO" data-lang="GO"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-GO" data-lang="GO"><span class="c1">// 连接es抛出异常：panic: no active connection found: no Elasticsearch node available
+</span><span class="c1"></span>
+<span class="nx">这里需要关闭Sniff程序</span><span class="err">：</span>
+	<span class="nx">Sniff程序自动查找默认群集的所有节点</span>
+
+<span class="c1">// 解决：
+</span><span class="c1"></span><span class="nx">client</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">elastic</span><span class="p">.</span><span class="nf">NewClient</span><span class="p">(</span><span class="nx">elastic</span><span class="p">.</span><span class="nf">SetSniff</span><span class="p">(</span><span class="kc">false</span><span class="p">),</span><span class="nx">elastic</span><span class="p">.</span><span class="nf">SetURL</span><span class="p">(</span><span class="s">&#34;http://192.168.1.7:9200&#34;</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-13 17:06
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/%E6%93%8D%E4%BD%9C%E5%90%84%E4%B8%AA%E6%9C%8D%E5%8A%A1/">操作各个服务</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-14-%E5%87%BD%E6%95%B0-%E9%97%AD%E5%8C%85%E5%87%BD%E6%95%B0/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">函数-闭包函数</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-10-12-go%E6%93%8D%E4%BD%9Ckafka/">
+        <span class="next-text nav-default">go操作kafka</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

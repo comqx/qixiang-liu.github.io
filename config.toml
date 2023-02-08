@@ -60,7 +60,8 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 #   name = "阅读清单"
 #   weight = 60
 #   identifier = "reading-list"
-#   url = "https://github.com/nusr/reading-list/"
+#   url = "https://github.com/qixiang-liu/reading-list/"
+# https://github.com/qixiang-liu/qixiang-liu.github.io/search
 
 [params]
   version = "4.x"           # Used to give a friendly message when you have an incompatible update

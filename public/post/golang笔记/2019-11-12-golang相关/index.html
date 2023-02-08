@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>golang相关 - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content="" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-11-12-golang%E7%9B%B8%E5%85%B3/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-11-12-golang%E7%9B%B8%E5%85%B3/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-11-12-golang%E7%9B%B8%E5%85%B3/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="golang相关" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-11-12-golang%E7%9B%B8%E5%85%B3/" />
+<meta property="article:published_time" content="2019-11-12T11:01:09+08:00" />
+<meta property="article:modified_time" content="2019-11-12T11:01:09+08:00" />
+<meta itemprop="name" content="golang相关">
+<meta itemprop="description" content="">
+
+
+<meta itemprop="datePublished" content="2019-11-12T11:01:09&#43;08:00" />
+<meta itemprop="dateModified" content="2019-11-12T11:01:09&#43;08:00" />
+<meta itemprop="wordCount" content="1797">
+
+
+
+<meta itemprop="keywords" content="面试笔记相关," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="golang相关"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">golang相关</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-11-12 11:01 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 1797 字 </span>
+      <span class="more-meta"> 预计阅读 4 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#context">context</a>
+<ul>
+<li><a href="#background-和todo">Background()和TODO()</a></li>
+<li><a href="#context包内的四个方法">context包内的四个方法</a>
+<ul>
+<li><a href="#withcancel">WithCancel</a></li>
+<li><a href="#withdeadline">WithDeadline</a></li>
+<li><a href="#withtimeout">WithTimeout</a></li>
+<li><a href="#withvalue">WithValue</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#channel操作的异常情况">channel操作的异常情况</a></li>
+<li><a href="#defer执行的时机">defer执行的时机</a>
+<ul>
+<li><a href="#defer和reture执行的时机">defer和reture执行的时机</a></li>
+</ul></li>
+<li><a href="#http-protobuffer的方式">http+protobuffer的方式</a>
+<ul>
+<li><a href="#请求包格式">请求包格式</a></li>
+</ul></li>
+<li><a href="#tcp-udp-网络协议如何传输">Tcp udp 网络协议如何传输</a></li>
+<li><a href="#cookie和session的区别">cookie和session的区别</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <h1 id="context">context</h1>
+
+<p>context作用是主动关闭运行中的goroute。</p>
+
+<p>实现原理：通过向通道中发送信号，来达到关闭goroute，</p>
+
+<p>俩个根节点，4个方法</p>
+
+<h2 id="background-和todo">Background()和TODO()</h2>
+
+<p>Go内置两个函数：<code>Background()</code>和<code>TODO()</code>，这两个函数分别返回一个实现了<code>Context</code>接口的<code>background</code>和<code>todo</code>。我们代码中最开始都是以这两个内置的上下文对象作为最顶层的<code>partent context</code>，衍生出更多的子上下文对象。</p>
+
+<ul>
+<li><p><code>Background()</code>主要用于main函数、初始化以及测试代码中，作为Context这个树结构的最顶层的Context，也就是根Context。</p></li>
+
+<li><p><code>TODO()</code>，它目前还不知道具体的使用场景，如果我们不知道该使用什么Context的时候，可以使用这个。</p></li>
+</ul>
+
+<p><code>background</code>和<code>todo</code>本质上都是<code>emptyCtx</code>结构体类型，是一个不可取消，没有设置截止时间，没有携带任何值的Context。</p>
+
+<h2 id="context包内的四个方法">context包内的四个方法</h2>
+
+<h3 id="withcancel">WithCancel</h3>
+
+<blockquote>
+<p>函数签名：<code>func WithCancel(parent Context) (ctx Context, cancel CancelFunc)</code></p>
+
+<p><code>WithCancel</code>返回带有新Done通道的父节点的副本。当调用返回的cancel函数或当关闭父上下文的Done通道时，将关闭返回上下文的Done通道，无论先发生什么情况。</p>
+
+<p>取消此上下文将释放与其关联的资源，因此代码应该在此上下文中运行的操作完成后立即调用cancel</p>
+</blockquote>
+
+<h3 id="withdeadline">WithDeadline</h3>
+
+<blockquote>
+<p>函数签名：<code>func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)</code></p>
+
+<p>指定一个时间，是一个绝对时间。当前时间+50ms的方式</p>
+</blockquote>
+
+<h3 id="withtimeout">WithTimeout</h3>
+
+<blockquote>
+<p>函数签名：<code>func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)</code></p>
+
+<p><code>WithTimeout</code>返回<code>WithDeadline(parent, time.Now().Add(timeout))</code></p>
+
+<p>使用相对的超时时间，多长时间之后。 超时时间50ms就主动关闭</p>
+</blockquote>
+
+<h3 id="withvalue">WithValue</h3>
+
+<blockquote>
+<p>函数签名：<code>func WithValue(parent Context, key, val interface{}) Context</code></p>
+</blockquote>
+
+<h1 id="channel操作的异常情况">channel操作的异常情况</h1>
+
+<p><img src="/post/images/image-20191030172403001.png" alt="image-20191030172403001" /></p>
+
+<h1 id="defer执行的时机">defer执行的时机</h1>
+
+<blockquote>
+<p>go语言中函数的return不是原子操作，在底层是分为俩步来执行的</p>
+
+<p>第一步：返回值赋值</p>
+
+<p>第二部：真正的return返回</p>
+
+<p>函数中如果存在defer，那么defer执行的时机是在第一步和第二步之间</p>
+</blockquote>
+
+<p><img src="/post/images/image-20191030213138041.png" alt="image-20191030213138041" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">calc</span><span class="p">(</span><span class="nx">index</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">ret</span> <span class="o">:=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">index</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">ret</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">ret</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">a</span> <span class="o">:=</span> <span class="mi">1</span>
+	<span class="nx">b</span> <span class="o">:=</span> <span class="mi">2</span>
+	<span class="k">defer</span> <span class="nf">calc</span><span class="p">(</span><span class="s">&#34;1&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nf">calc</span><span class="p">(</span><span class="s">&#34;10&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">))</span> <span class="c1">//携带全部变量的状态，也就是说直接拷贝对应的值传入函数，但是不执行
+</span><span class="c1"></span>	<span class="nx">a</span> <span class="p">=</span> <span class="mi">0</span>
+	<span class="k">defer</span> <span class="nf">calc</span><span class="p">(</span><span class="s">&#34;2&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nf">calc</span><span class="p">(</span><span class="s">&#34;20&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">))</span>
+	<span class="nx">b</span> <span class="p">=</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="c1">// 1. a:=1
+</span><span class="c1">// 2. b:=2
+</span><span class="c1">// 3. defer calc(&#34;1&#34;, 1, calc(&#34;10&#34;, 1, 2))  
+</span><span class="c1">// 4. calc(&#34;10&#34;, 1, 2) // &#34;10&#34; 1 2 3
+</span><span class="c1">// 5. defer calc(&#34;1&#34;, 1, 3)
+</span><span class="c1">// 6. a = 0
+</span><span class="c1">// 7. defer calc(&#34;2&#34;, 0, calc(&#34;20&#34;, 0, 2))
+</span><span class="c1">// 8. calc(&#34;20&#34;, 0, 2) // &#34;20&#34; 0 2 2
+</span><span class="c1">// 9. defer calc(&#34;2&#34;, 0, 2)
+</span><span class="c1">// 10. b = 1
+</span><span class="c1">// calc(&#34;2&#34;, 0, 2) // &#34;2&#34; 0 2 2
+</span><span class="c1">// calc(&#34;1&#34;, 1, 3) // &#34;1&#34; 1 3 4
+</span><span class="c1"></span>
+<span class="c1">// 最终的答案：
+</span><span class="c1">// &#34;10&#34; 1 2 3
+</span><span class="c1">// &#34;20&#34; 0 2 2
+</span><span class="c1">//  &#34;2&#34; 0 2 2
+</span><span class="c1"></span><span class="o">//</span> <span class="s">&#34;1&#34;</span> <span class="mi">0</span> <span class="mi">3</span> <span class="mi">3</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="defer和reture执行的时机">defer和reture执行的时机</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// A. 匿名返回值的情况
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;a return:&#34;</span><span class="p">,</span> <span class="nf">a</span><span class="p">())</span> <span class="c1">// i=0 // 0. 执行函数得到返回值
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">a</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">i</span> <span class="kt">int</span>
+	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">i</span><span class="o">++</span> 
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;a defer2:&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="c1">//i=1+1  // 3. 获取目前i的值为1，然后+1，打印，得到的i的值为2
+</span><span class="c1"></span>	<span class="p">}()</span>
+	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">i</span><span class="o">++</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;a defer1:&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>  <span class="c1">// i=0+1 // 2. 获取i的值为0，然后+1，打印，得到的i为1
+</span><span class="c1"></span>	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">i</span> <span class="c1">// i=0 //1. 会先保存变量的值，然后执行倒序执行defer函数
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// B 有名返回值的情况
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;b return:&#34;</span><span class="p">,</span> <span class="nf">b</span><span class="p">())</span> <span class="c1">// 打印结果为 b return: 2
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">b</span><span class="p">()</span> <span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">i</span><span class="o">++</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;b defer2:&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="c1">// 打印结果为 b defer2: 2
+</span><span class="c1"></span>	<span class="p">}()</span>
+	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">i</span><span class="o">++</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;b defer1:&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="c1">// 打印结果为 b defer1: 1
+</span><span class="c1"></span>	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">i</span> <span class="c1">// 或者直接 return 效果相同
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// 官方实例 1
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">a</span><span class="p">()(</span><span class="nx">result</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	     <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		        <span class="nx">result</span><span class="o">++</span>
+		    <span class="p">}()</span>
+	<span class="k">return</span> <span class="mi">0</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nf">a</span><span class="p">())</span> <span class="c1">// 返回 1
+</span><span class="c1"></span><span class="p">}</span>
+<span class="c1">// 官方实例 2
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;=</span><span class="mi">3</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+		<span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="c1">// 3 2 1 0 
+</span><span class="c1"></span>	<span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="http-protobuffer的方式">http+protobuffer的方式</h1>
+
+<h2 id="请求包格式">请求包格式</h2>
+
+<p><img src="/post/images/image-20191104152205518.png" alt="image-20191104152205518" /></p>
+
+<h1 id="tcp-udp-网络协议如何传输">Tcp udp 网络协议如何传输</h1>
+
+<h1 id="cookie和session的区别">cookie和session的区别</h1>
+
+<ol>
+<li>Cookie 在客户端（浏览器），Session 在服务器端。</li>
+<li>Cookie的安全性一般，他人可通过分析存放在本地的Cookie并进行Cookie欺骗。在安全性第一的前提下，选择Session更优。重要交互信息比如权限等就要放在Session中，一般的信息记录放Cookie就好了。</li>
+<li>单个Cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个Cookie。</li>
+<li>Session 可以放在 文件、数据库或内存中，比如在使用Node时将Session保存在redis中。由于一定时间内它是保存在服务器上的，当访问增多时，会较大地占用服务器的性能。考虑到减轻服务器性能方面，应当适时使用Cookie。</li>
+<li>Session 的运行依赖Session ID，而 Session ID 是存在 Cookie 中的，也就是说，如果浏览器禁用了 Cookie，Session 也会失效（但是可以通过其它方式实现，比如在 url 中传递 Session ID）。</li>
+</ol>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-11-12 11:01
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/%E9%9D%A2%E8%AF%95%E7%AC%94%E8%AE%B0%E7%9B%B8%E5%85%B3/">面试笔记相关</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-11-22-docker%E5%8E%9F%E7%90%86/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">docker原理</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-11-06-%E5%BC%80%E5%8F%91%E7%9B%B8%E5%85%B3/">
+        <span class="next-text nav-default">开发相关</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

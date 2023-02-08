@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>golang中使用json的技巧 - Mr.Liu World</title>
+    <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="qixiang-liu" /><meta name="description" content="" /><meta name="keywords" content="Mac, Github, golang, kubernetes, Front End" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-12-11-golang%E4%B8%AD%E4%BD%BF%E7%94%A8json%E7%9A%84%E6%8A%80%E5%B7%A7/" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-12-11-golang%E4%B8%AD%E4%BD%BF%E7%94%A8json%E7%9A%84%E6%8A%80%E5%B7%A7/" rel="alternate" type="application/rss+xml" title="Mr.Liu World" />
+<link href="/post/golang%E7%AC%94%E8%AE%B0/2019-12-11-golang%E4%B8%AD%E4%BD%BF%E7%94%A8json%E7%9A%84%E6%8A%80%E5%B7%A7/" rel="feed" type="application/rss+xml" title="Mr.Liu World" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.06658218.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/reset-even.css">
+
+
+<meta property="og:title" content="golang中使用json的技巧" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://qixiang-liu.github.io/post/golang%E7%AC%94%E8%AE%B0/2019-12-11-golang%E4%B8%AD%E4%BD%BF%E7%94%A8json%E7%9A%84%E6%8A%80%E5%B7%A7/" />
+<meta property="article:published_time" content="2019-12-11T09:20:26+08:00" />
+<meta property="article:modified_time" content="2019-12-11T09:20:26+08:00" />
+<meta itemprop="name" content="golang中使用json的技巧">
+<meta itemprop="description" content="">
+
+
+<meta itemprop="datePublished" content="2019-12-11T09:20:26&#43;08:00" />
+<meta itemprop="dateModified" content="2019-12-11T09:20:26&#43;08:00" />
+<meta itemprop="wordCount" content="2036">
+
+
+
+<meta itemprop="keywords" content="结构体," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="golang中使用json的技巧"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+<body>
+<div id="mobile-navbar" class="mobile-navbar">
+    <div class="mobile-header-logo">
+        <a href="/" class="logo">Mr.Liu World</a>
+    </div>
+    <div class="mobile-navbar-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+    <ul class="mobile-menu-list">
+        <a href="/">
+            <li class="mobile-menu-item" title="首页">首页</li>
+        </a>
+        <a href="/post/">
+            <li class="mobile-menu-item" title="归档">归档</li>
+        </a>
+        <a href="/categories/">
+            <li class="mobile-menu-item" title="分类">分类</li>
+        </a>
+        <a href="/tags/">
+            <li class="mobile-menu-item" title="标签">标签</li>
+        </a>
+        <a href="/about/">
+            <li class="mobile-menu-item" title="关于我">关于我</li>
+        </a>
+        
+    </ul>
+    <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+</nav>
+
+<div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+    <a href="/" class="logo">Mr.Liu World</a>
+</div>
+
+<nav class="site-navbar">
+    <ul id="menu" class="menu" data-sum="0">
+        
+        <li class="menu-item menu-item-home">
+            <a class="menu-item-link" href="/" title="首页">首页</a>
+        </li>
+        
+        <li class="menu-item menu-item-archives">
+            <a class="menu-item-link" href="/post/" title="归档">归档</a>
+        </li>
+        
+        <li class="menu-item menu-item-categories">
+            <a class="menu-item-link" href="/categories/" title="分类">分类</a>
+        </li>
+        
+        <li class="menu-item menu-item-tags">
+            <a class="menu-item-link" href="/tags/" title="标签">标签</a>
+        </li>
+        
+        <li class="menu-item menu-item-about">
+            <a class="menu-item-link" href="/about/" title="关于我">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+        <form class="search-form" style="position: absolute;">
+    <input name="search" type="search" style="height: 28px;padding-left: 30px;"/>
+    <input type="image" src="/img/search.svg" alt="Search" style="position: absolute;left: 6px;top: 6px;"/>
+</form>
+
+
+
+    </header>
+
+
+    <main id="main" class="main">
+        <div class="content-wrapper">
+            <div id="content" class="content">
+                <article class="post">
+  
+  <header class="post-header">
+    <h1 class="post-title">golang中使用json的技巧</h1>
+
+    <div class="post-meta">
+      <span class="post-time"> 2019-12-11 09:20 </span>
+      <div class="post-category">
+        <a href="/categories/golang/"> golang </a>
+        </div>
+      <span class="more-meta"> 约 2036 字 </span>
+      <span class="more-meta"> 预计阅读 5 分钟 </span>
+      <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+    </div>
+  </header>
+
+  <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#前言">前言</a></li>
+<li><a href="#临时忽略struct空字段">临时忽略struct空字段</a></li>
+<li><a href="#临时添加额外的字段">临时添加额外的字段</a></li>
+<li><a href="#临时粘合两个struct">临时粘合两个struct</a></li>
+<li><a href="#一个json切分成两个struct">一个json切分成两个struct</a></li>
+<li><a href="#临时改名struct的字段">临时改名struct的字段</a></li>
+<li><a href="#用字符串传递数字">用字符串传递数字</a></li>
+<li><a href="#容忍字符串和数字互转">容忍字符串和数字互转</a></li>
+<li><a href="#容忍空数组作为对象">容忍空数组作为对象</a></li>
+<li><a href="#使用-marshaljson支持time-time">使用 MarshalJSON支持time.Time</a></li>
+<li><a href="#使用-registertypeencoder支持time-time">使用 RegisterTypeEncoder支持time.Time</a></li>
+<li><a href="#使用-marshaltext支持非字符串作为key的map">使用 MarshalText支持非字符串作为key的map</a></li>
+<li><a href="#使用-json-rawmessage">使用 json.RawMessage</a></li>
+<li><a href="#使用-json-number">使用 json.Number</a></li>
+<li><a href="#统一更改字段的命名风格">统一更改字段的命名风格</a></li>
+<li><a href="#使用私有的字段">使用私有的字段</a></li>
+<li><a href="#忽略掉一些字段">忽略掉一些字段</a></li>
+<li><a href="#忽略掉一些字段2">忽略掉一些字段2</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-content">
+    <h1 id="前言">前言</h1>
+
+<p><a href="https://github.com/taowen">taowen</a>是<a href="https://github.com/json-iterator/go">json-iterator</a>的作者。 序列化和反序列化需要处理JSON和struct的关系，其中会用到一些技巧。 原文 <a href="http://jsoniter.com/go-tips.cn.html">Golang 中使用 JSON 的小技巧</a>是他的经验之谈，介绍了一些struct解析成json的技巧，以及 json-iterator 库的一些便利的处理。</p>
+
+<p>有的时候上游传过来的字段是string类型的，但是我们却想用变成数字来使用。 本来用一个json:&quot;,string&quot; 就可以支持了，如果不知道golang的这些小技巧，就要大费周章了。</p>
+
+<p>参考文章：<a href="http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/">http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/</a></p>
+
+<h1 id="临时忽略struct空字段">临时忽略struct空字段</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Email</span>    <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
+    <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;password&#34;`</span>
+    <span class="c1">// many more fields…
+</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>如果想临时忽略掉空<code>Password</code>字段,可以用<code>omitempty</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span> <span class="p">{</span>
+    <span class="o">*</span><span class="nx">User</span>
+    <span class="nx">Password</span> <span class="kt">bool</span> <span class="s">`json:&#34;password,omitempty&#34;`</span>
+<span class="p">}{</span>
+    <span class="nx">User</span><span class="p">:</span> <span class="nx">user</span><span class="p">,</span>
+<span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="临时添加额外的字段">临时添加额外的字段</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Email</span>    <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
+    <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;password&#34;`</span>
+    <span class="c1">// many more fields…
+</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>临时忽略掉空<code>Password</code>字段，并且添加<code>token</code>字段</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span> <span class="p">{</span>
+    <span class="o">*</span><span class="nx">User</span>
+    <span class="nx">Token</span>    <span class="kt">string</span> <span class="s">`json:&#34;token&#34;`</span>
+    <span class="nx">Password</span> <span class="kt">bool</span> <span class="s">`json:&#34;password,omitempty&#34;`</span>
+<span class="p">}{</span>
+    <span class="nx">User</span><span class="p">:</span> <span class="nx">user</span><span class="p">,</span>
+    <span class="nx">Token</span><span class="p">:</span> <span class="nx">token</span><span class="p">,</span>
+<span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="临时粘合两个struct">临时粘合两个struct</h1>
+
+<p>通过嵌入struct的方式:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">BlogPost</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">URL</span>   <span class="kt">string</span> <span class="s">`json:&#34;url&#34;`</span>
+    <span class="nx">Title</span> <span class="kt">string</span> <span class="s">`json:&#34;title&#34;`</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Analytics</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Visitors</span>  <span class="kt">int</span> <span class="s">`json:&#34;visitors&#34;`</span>
+    <span class="nx">PageViews</span> <span class="kt">int</span> <span class="s">`json:&#34;page_views&#34;`</span>
+<span class="p">}</span>
+
+<span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span><span class="p">{</span>
+    <span class="o">*</span><span class="nx">BlogPost</span>
+    <span class="o">*</span><span class="nx">Analytics</span>
+<span class="p">}{</span><span class="nx">post</span><span class="p">,</span> <span class="nx">analytics</span><span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="一个json切分成两个struct">一个json切分成两个struct</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">`{
+</span><span class="s">  &#34;url&#34;: &#34;attila@attilaolah.eu&#34;,
+</span><span class="s">  &#34;title&#34;: &#34;Attila&#39;s Blog&#34;,
+</span><span class="s">  &#34;visitors&#34;: 6,
+</span><span class="s">  &#34;page_views&#34;: 14
+</span><span class="s">}`</span><span class="p">),</span> <span class="o">&amp;</span><span class="kd">struct</span> <span class="p">{</span>
+  <span class="o">*</span><span class="nx">BlogPost</span>
+  <span class="o">*</span><span class="nx">Analytics</span>
+<span class="p">}{</span><span class="o">&amp;</span><span class="nx">post</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">analytics</span><span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="临时改名struct的字段">临时改名struct的字段</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">CacheItem</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Key</span>    <span class="kt">string</span> <span class="s">`json:&#34;key&#34;`</span>
+    <span class="nx">MaxAge</span> <span class="kt">int</span>    <span class="s">`json:&#34;cacheAge&#34;`</span>
+    <span class="nx">Value</span>  <span class="nx">Value</span>  <span class="s">`json:&#34;cacheValue&#34;`</span>
+<span class="p">}</span>
+
+<span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span><span class="p">{</span>
+    <span class="o">*</span><span class="nx">CacheItem</span>
+
+    <span class="c1">// Omit bad keys
+</span><span class="c1"></span>    <span class="nx">OmitMaxAge</span> <span class="nx">omit</span> <span class="s">`json:&#34;cacheAge,omitempty&#34;`</span>
+    <span class="nx">OmitValue</span>  <span class="nx">omit</span> <span class="s">`json:&#34;cacheValue,omitempty&#34;`</span>
+
+    <span class="c1">// Add nice keys
+</span><span class="c1"></span>    <span class="nx">MaxAge</span> <span class="kt">int</span>    <span class="s">`json:&#34;max_age&#34;`</span>
+    <span class="nx">Value</span>  <span class="o">*</span><span class="nx">Value</span> <span class="s">`json:&#34;value&#34;`</span>
+<span class="p">}{</span>
+    <span class="nx">CacheItem</span><span class="p">:</span> <span class="nx">item</span><span class="p">,</span>
+
+    <span class="c1">// Set the int by value:
+</span><span class="c1"></span>    <span class="nx">MaxAge</span><span class="p">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">MaxAge</span><span class="p">,</span>
+
+    <span class="c1">// Set the nested struct by reference, avoid making a copy:
+</span><span class="c1"></span>    <span class="nx">Value</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">item</span><span class="p">.</span><span class="nx">Value</span><span class="p">,</span>
+<span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="用字符串传递数字">用字符串传递数字</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">TestObject</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Field1</span> <span class="kt">int</span>    <span class="s">`json:&#34;,string&#34;`</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这个对应的json是 <code>{&quot;Field1&quot;: &quot;100&quot;}</code></p>
+
+<p>如果json是 <code>{&quot;Field1&quot;: 100}</code> 则会报错</p>
+
+<h1 id="容忍字符串和数字互转">容忍字符串和数字互转</h1>
+
+<p>如果你使用的是jsoniter，可以启动<strong>模糊模式</strong>来支持 PHP 传递过来的 JSON。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="s">&#34;github.com/json-iterator/go/extra&#34;</span>
+
+<span class="nx">extra</span><span class="p">.</span><span class="nf">RegisterFuzzyDecoders</span><span class="p">()</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这样就可以处理字符串和数字类型不对的问题了。比如</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">val</span> <span class="kt">string</span>
+<span class="nx">jsoniter</span><span class="p">.</span><span class="nf">UnmarshalFromString</span><span class="p">(</span><span class="s">`100`</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">val</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>又比如</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">val</span> <span class="kt">float32</span>
+<span class="nx">jsoniter</span><span class="p">.</span><span class="nf">UnmarshalFromString</span><span class="p">(</span><span class="s">`&#34;1.23&#34;`</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">val</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="容忍空数组作为对象">容忍空数组作为对象</h1>
+
+<p>PHP另外一个令人崩溃的地方是，如果 PHP array是空的时候，序列化出来是<code>[]</code>。但是不为空的时候，序列化出来的是<code>{&quot;key&quot;:&quot;value&quot;}</code>。 我们需要把 <code>[]</code> 当成 <code>{}</code> 处理。</p>
+
+<p>如果你使用的是jsoniter，可以启动模糊模式来支持 PHP 传递过来的 JSON。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="s">&#34;github.com/json-iterator/go/extra&#34;</span>
+
+<span class="nx">extra</span><span class="p">.</span><span class="nf">RegisterFuzzyDecoders</span><span class="p">()</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这样就可以支持了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">val</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="nx">jsoniter</span><span class="p">.</span><span class="nf">UnmarshalFromString</span><span class="p">(</span><span class="s">`[]`</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">val</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="使用-marshaljson支持time-time">使用 MarshalJSON支持time.Time</h1>
+
+<p>golang 默认会把 <code>time.Time</code> 用字符串方式序列化。如果我们想用其他方式表示 <code>time.Time</code>，需要自定义类型并定义 <code>MarshalJSON</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">timeImplementedMarshaler</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">obj</span> <span class="nx">timeImplementedMarshaler</span><span class="p">)</span> <span class="nf">MarshalJSON</span><span class="p">()</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">seconds</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Time</span><span class="p">(</span><span class="nx">obj</span><span class="p">).</span><span class="nf">Unix</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">strconv</span><span class="p">.</span><span class="nf">FormatInt</span><span class="p">(</span><span class="nx">seconds</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>序列化的时候会调用 MarshalJSON</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">TestObject</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Field</span> <span class="nx">timeImplementedMarshaler</span>
+<span class="p">}</span>
+<span class="nx">should</span> <span class="o">:=</span> <span class="nx">require</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+<span class="nx">val</span> <span class="o">:=</span> <span class="nf">timeImplementedMarshaler</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="nx">obj</span> <span class="o">:=</span> <span class="nx">TestObject</span><span class="p">{</span><span class="nx">val</span><span class="p">}</span>
+<span class="nx">bytes</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jsoniter</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Nil</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="s">`{&#34;Field&#34;:123}`</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">bytes</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="使用-registertypeencoder支持time-time">使用 RegisterTypeEncoder支持time.Time</h1>
+
+<p>jsoniter 能够对不是你定义的type自定义JSON编解码方式。比如对于 <code>time.Time</code> 可以用 epoch int64 来序列化</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="s">&#34;github.com/json-iterator/go/extra&#34;</span>
+
+<span class="nx">extra</span><span class="p">.</span><span class="nf">RegisterTimeAsInt64Codec</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Microsecond</span><span class="p">)</span>
+<span class="nx">output</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jsoniter</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1002</span><span class="p">))</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="s">&#34;1000001&#34;</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">output</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>如果要自定义的话，参见 <code>RegisterTimeAsInt64Codec</code> 的实现代码</p>
+
+<h1 id="使用-marshaltext支持非字符串作为key的map">使用 MarshalText支持非字符串作为key的map</h1>
+
+<p>虽然 JSON 标准里只支持 <code>string</code> 作为 <code>key</code> 的 <code>map</code>。但是 golang 通过 <code>MarshalText()</code> 接口，使得其他类型也可以作为 <code>map</code> 的 <code>key</code>。例如</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">f</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">big</span><span class="p">.</span><span class="nf">ParseFloat</span><span class="p">(</span><span class="s">&#34;1&#34;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="nx">big</span><span class="p">.</span><span class="nx">ToZero</span><span class="p">)</span>
+<span class="nx">val</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Float</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="nx">f</span><span class="p">:</span> <span class="s">&#34;2&#34;</span><span class="p">}</span>
+<span class="nx">str</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">MarshalToString</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="s">`{&#34;1&#34;:&#34;2&#34;}`</span><span class="p">,</span> <span class="nx">str</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其中 <code>big.Float</code> 就实现了 <code>MarshalText()</code></p>
+
+<h1 id="使用-json-rawmessage">使用 json.RawMessage</h1>
+
+<p>如果部分json文档没有标准格式，我们可以把原始的信息用<code>[]byte</code>保存下来。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">TestObject</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Field1</span> <span class="kt">string</span>
+    <span class="nx">Field2</span> <span class="nx">json</span><span class="p">.</span><span class="nx">RawMessage</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">data</span> <span class="nx">TestObject</span>
+<span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">`{&#34;field1&#34;: &#34;hello&#34;, &#34;field2&#34;: [1,2,3]}`</span><span class="p">),</span> <span class="o">&amp;</span><span class="nx">data</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="s">` [1,2,3]`</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">Field2</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="使用-json-number">使用 json.Number</h1>
+
+<p>默认情况下，如果是 <code>interface{}</code> 对应数字的情况会是 <code>float64</code> 类型的。如果输入的数字比较大，这个表示会有损精度。所以可以 <code>UseNumber()</code> 启用 <code>json.Number</code> 来用字符串表示数字。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">decoder1</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">bytes</span><span class="p">.</span><span class="nf">NewBufferString</span><span class="p">(</span><span class="s">`123`</span><span class="p">))</span>
+<span class="nx">decoder1</span><span class="p">.</span><span class="nf">UseNumber</span><span class="p">()</span>
+<span class="kd">var</span> <span class="nx">obj1</span> <span class="kd">interface</span><span class="p">{}</span>
+<span class="nx">decoder1</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">obj1</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="s">&#34;123&#34;</span><span class="p">),</span> <span class="nx">obj1</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>jsoniter 支持标准库的这个用法。同时，扩展了行为使得 <code>Unmarshal</code> 也可以支持 <code>UseNumber</code> 了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">json</span> <span class="o">:=</span> <span class="nx">Config</span><span class="p">{</span><span class="nx">UseNumber</span><span class="p">:</span><span class="kc">true</span><span class="p">}.</span><span class="nf">Froze</span><span class="p">()</span>
+<span class="kd">var</span> <span class="nx">obj</span> <span class="kd">interface</span><span class="p">{}</span>
+<span class="nx">json</span><span class="p">.</span><span class="nf">UnmarshalFromString</span><span class="p">(</span><span class="s">&#34;123&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">obj</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="s">&#34;123&#34;</span><span class="p">),</span> <span class="nx">obj</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="统一更改字段的命名风格">统一更改字段的命名风格</h1>
+
+<p>经常 JSON 里的字段名 Go 里的字段名是不一样的。我们可以用 field tag 来修改。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">output</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jsoniter</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">UserName</span>      <span class="kt">string</span> <span class="s">`json:&#34;user_name&#34;`</span>
+    <span class="nx">FirstLanguage</span> <span class="kt">string</span> <span class="s">`json:&#34;first_language&#34;`</span>
+<span class="p">}{</span>
+    <span class="nx">UserName</span><span class="p">:</span>      <span class="s">&#34;taowen&#34;</span><span class="p">,</span>
+    <span class="nx">FirstLanguage</span><span class="p">:</span> <span class="s">&#34;Chinese&#34;</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="s">`{&#34;user_name&#34;:&#34;taowen&#34;,&#34;first_language&#34;:&#34;Chinese&#34;}`</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">output</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>但是一个个字段来设置，太麻烦了。如果使用 jsoniter，我们可以统一设置命名风格。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="s">&#34;github.com/json-iterator/go/extra&#34;</span>
+
+<span class="nx">extra</span><span class="p">.</span><span class="nf">SetNamingStrategy</span><span class="p">(</span><span class="nx">LowerCaseWithUnderscores</span><span class="p">)</span>
+<span class="nx">output</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">jsoniter</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">UserName</span>      <span class="kt">string</span>
+    <span class="nx">FirstLanguage</span> <span class="kt">string</span>
+<span class="p">}{</span>
+    <span class="nx">UserName</span><span class="p">:</span>      <span class="s">&#34;taowen&#34;</span><span class="p">,</span>
+    <span class="nx">FirstLanguage</span><span class="p">:</span> <span class="s">&#34;Chinese&#34;</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Nil</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="s">`{&#34;user_name&#34;:&#34;taowen&#34;,&#34;first_language&#34;:&#34;Chinese&#34;}`</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">output</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="使用私有的字段">使用私有的字段</h1>
+
+<p>Go 的标准库只支持 public 的 field。jsoniter 额外支持了 private 的 field。需要使用 <code>SupportPrivateFields()</code> 来开启开关。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="s">&#34;github.com/json-iterator/go/extra&#34;</span>
+
+<span class="nx">extra</span><span class="p">.</span><span class="nf">SupportPrivateFields</span><span class="p">()</span>
+<span class="kd">type</span> <span class="nx">TestObject</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">field1</span> <span class="kt">string</span>
+<span class="p">}</span>
+<span class="nx">obj</span> <span class="o">:=</span> <span class="nx">TestObject</span><span class="p">{}</span>
+<span class="nx">jsoniter</span><span class="p">.</span><span class="nf">UnmarshalFromString</span><span class="p">(</span><span class="s">`{&#34;field1&#34;:&#34;Hello&#34;}`</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">obj</span><span class="p">)</span>
+<span class="nx">should</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">field1</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>下面是我补充的内容</p>
+
+<h1 id="忽略掉一些字段">忽略掉一些字段</h1>
+
+<p>原文中第一节有个错误，我更正过来了。<code>omitempty</code>不会忽略某个字段，而是忽略空的字段，当字段的值为空值的时候，它不会出现在JSON数据中。</p>
+
+<p>如果想忽略某个字段，需要使用 <code>json:&quot;-&quot;</code>格式。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Email</span>    <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
+    <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;password&#34;`</span>
+    <span class="c1">// many more fields…
+</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>如果想临时忽略掉空<code>Password</code>字段,可以用<code>-</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span> <span class="p">{</span>
+    <span class="o">*</span><span class="nx">User</span>
+    <span class="nx">Password</span> <span class="kt">bool</span> <span class="s">`json:&#34;-&#34;`</span>
+<span class="p">}{</span>
+    <span class="nx">User</span><span class="p">:</span> <span class="nx">user</span><span class="p">,</span>
+<span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="忽略掉一些字段2">忽略掉一些字段2</h1>
+
+<p>如果不想更改原struct,还可以使用下面的方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Email</span>    <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
+    <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;password&#34;`</span>
+    <span class="c1">// many more fields…
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">omit</span> <span class="o">*</span><span class="kd">struct</span><span class="p">{}</span>
+
+<span class="kd">type</span> <span class="nx">PublicUser</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="o">*</span><span class="nx">User</span>
+    <span class="nx">Password</span> <span class="nx">omit</span> <span class="s">`json:&#34;-&#34;`</span>
+<span class="p">}</span>
+
+<span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">PublicUser</span><span class="p">{</span>
+    <span class="nx">User</span><span class="p">:</span> <span class="nx">user</span><span class="p">,</span>
+<span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+  </div>
+
+  <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">qixiang-liu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-12-11 09:20
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a target="_blank" rel="license noopener" href="https://github.com/qixiang-liu/qixiang-liu.github.io">MIT</a></span>
+  </p>
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/wechat.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/alipay.jpg">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+    <div class="post-tags">
+      <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+      </div>
+    <nav class="post-nav">
+      <a class="prev" href="/post/golang%E7%AC%94%E8%AE%B0/2019-12-11-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%94%81%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">并发安全锁与原子操作</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+      <a class="next" href="/post/golang%E7%AC%94%E8%AE%B0/2019-12-07-%E5%B0%8F%E5%9D%91%E6%95%B4%E7%90%86/">
+        <span class="next-text nav-default">小坑整理</span>
+        <span class="next-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav>
+  </footer>
+  <script src="https://utteranc.es/client.js"
+          repo="qixiang-liu/qixiang-liu.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterance.</a></noscript>
+</article>
+            </div>
+            
+
+        </div>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="social-links">
+  <a href="https://blog.csdn.net/qq_34857250" class="iconfont icon-cnblogs" title="cnblogs" rel="noopener" target="_blank" data-title="cnblogs"> </a>
+  <a href="18311166263@163.com" class="iconfont icon-email" title="email" rel="noopener" target="_blank" data-title="email"> </a>
+  <a href="https://github.com/qixiang-lu" class="iconfont icon-github" title="github" rel="noopener" target="_blank" data-title="github"> </a>
+  <a href="https://qixiang-liu.github.io/index.xml" type="application/rss+xml" rel="noopener" target="_blank" class="iconfont icon-rss" title="rss"></a>
+
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">qixiang-liu</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-CN".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.47f727f4.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-144681447-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
